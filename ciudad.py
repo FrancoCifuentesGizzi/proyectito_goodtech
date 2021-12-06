@@ -37,7 +37,7 @@ class ciudad:
         tk.Button(self.root, command = self.__Eliminar_C, text="Eliminar").place(x = 200, y = 350, width = 100, height = 50)
 
     def llenar_treeview_ciudades(self):  # Se llena el treeview de datos.
-        sql = """select * from ciudad;"""
+        sql = """select * from ciudad order by id_ciudad asc;"""
         # Ejecuta el select
         data = self.db.run_select ( sql )
 

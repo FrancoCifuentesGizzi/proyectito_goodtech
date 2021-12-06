@@ -41,12 +41,12 @@ class bodega:
     def __config_buttons_bodega(self):
         tk.Button(self.root, text="Agregar bodega",
             command = self.__Agregar_B).place(x = 0, y = 350, width = 300, height = 50)
-        tk.Button(self.root, command = self.__Editar_S, text="Modificar datos").place(x = 300, y = 350, width = 300, height = 50)
-        tk.Button(self.root, command = self.__Eliminar_S, text="Eliminar bodega").place(x = 600, y = 350, width = 300, height = 50)
+        tk.Button(self.root, command = self.__Editar_B, text="Modificar datos").place(x = 300, y = 350, width = 300, height = 50)
+        tk.Button(self.root, command = self.__Eliminar_B, text="Eliminar bodega").place(x = 600, y = 350, width = 300, height = 50)
 
     def llenar_treeview_bodega(self):
         sql = """select id_bodega, nombre_bod, direccion_bod, telefono_bod, nombre_ciu
-           from bodega join ciudad on bodega.ciudad_id_ciudad = ciudad.id_ciudad"""
+           from bodega join ciudad on bodega.ciudad_id_ciudad = ciudad.id_ciudad order by id_bodega asc"""
         data = self.db.run_select ( sql )
 
         if (data != self.data):
@@ -59,16 +59,17 @@ class bodega:
     def __Agregar_B(self):
         Add_bodega(self.db, self)
 
-    def __Editar_S(self):
+    def __Editar_B(self):
         if (self.treeview.focus () != ""):
             sql = "select id_bodega, nombre_bod, direccion_bod, telefono_bod, ciudad.nombre_ciu from bodega " \
                   "join ciudad on bodega.ciudad_id_ciudad = ciudad.id_ciudad where id_bodega = %(id_bodega)s"
             row_data = self.db.run_select_filter ( sql, {"id_bodega": self.treeview.focus ()} )[0]
             editar_bodega ( self.db, self, row_data )
 
-    def __Eliminar_S():
-        print("Heyo")
-        #Del_Empleado
+    def __Eliminar_B(self):
+        sql = """delete from bodega where id_bodega = %(id_bodega)s"""
+        self.db.run_sql ( sql, {"id_bodega": self.treeview.focus ()} )
+        self.llenar_treeview_bodega ()
 
 class Add_bodega:
     #Configuración de la ventana agregar
@@ -88,20 +89,20 @@ class Add_bodega:
     #Configuración de los labels
     def __config_label(self):
         tk.Label(self.add ,text = "Nombre: ").place(x = 0, y = 10, width = 100, height = 20)
-        tk.Label(self.add ,text = "Direccion: ").place(x = 0, y = 30, width = 100, height = 20)
-        tk.Label(self.add ,text = "Telefono: ").place(x = 0, y = 50, width = 100, height = 20)
-        tk.Label(self.add ,text = "Ciudad: ").place(x = 0, y = 70, width = 100, height = 20)
+        tk.Label(self.add ,text = "Direccion: ").place(x = 0, y = 35, width = 100, height = 20)
+        tk.Label(self.add ,text = "Telefono: ").place(x = 0, y = 60, width = 100, height = 20)
+        tk.Label(self.add ,text = "Ciudad: ").place(x = 0, y = 85, width = 100, height = 20)
 
     #Configuración de las casillas que el usuario ingresa info
     def __config_entry(self):
         self.entry_nombre = tk.Entry(self.add)
         self.entry_nombre.place(x = 100, y = 10, width = 100, height = 20)
         self.entry_direccion = tk.Entry(self.add)
-        self.entry_direccion.place(x = 100, y = 30, width = 100, height = 20)
+        self.entry_direccion.place(x = 100, y = 35, width = 100, height = 20)
         self.entry_telefono = tk.Entry(self.add)
-        self.entry_telefono.place(x = 100, y = 50, width = 100, height = 20)
+        self.entry_telefono.place(x = 100, y = 60, width = 100, height = 20)
         self.combo_ciudad = ttk.Combobox(self.add)
-        self.combo_ciudad.place(x = 100, y = 70, width = 100, height = 20)
+        self.combo_ciudad.place(x = 100, y = 85, width = 100, height = 20)
         self.combo_ciudad["values"], self.ids = self.__fill_combo ()
 
         #Configuración de los botones
@@ -109,7 +110,7 @@ class Add_bodega:
         tk.Button(self.add, text="Aceptar", command = self.__insertar).place(x = 55, y = 120, width = 105, height = 30)
 
     def __fill_combo(self):
-        sql = "select id_ciudad, nombre_ciu from ciudad"
+        sql = """select id_ciudad, nombre_ciu from ciudad order by id_ciudad asc"""
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
@@ -184,6 +185,6 @@ class editar_bodega:  # Clase para modificar
         self.padre.llenar_treeview_bodega ()
 
     def fill_combo(self):  #
-        sql = "select id_ciudad, nombre_ciu from ciudad"
+        sql = "select id_ciudad, nombre_ciu from ciudad order by id_ciudad asc"
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]

@@ -43,7 +43,7 @@ class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modif
                     command=self.eliminar_cliente ).place ( x=492, y=350, width=246, height=50 )
 
     def llenar_treeview_cliente(self):  # Se llena el treeview de datos.
-        sql = "select * from cliente"
+        sql = "select * from cliente order by id_cliente asc"
         # Ejecuta el select
         data = self.db.run_select ( sql )
 
@@ -53,8 +53,8 @@ class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modif
             self.treeview.delete ( *self.treeview.get_children () )
             for i in data:
                 # Inserta los datos
-                self.treeview.insert ( "", "end", text=i[0],
-                                       values=(i[1], i[2], i[3], i[4]), iid=i[0] )
+                self.treeview.insert ( "", "end", text=i[1],
+                                       values=(i[2], i[3], i[4], i[5]), iid=i[1] )
             self.data = data  # Actualiza la data
 
     def insertar_cliente(self):
@@ -138,7 +138,7 @@ class modificar_cliente:  # Clase para modificar
         self.insert_datos.resizable ( width=0, height=0 )
 
     def config_label(self):  # Se configuran las etiquetas.
-        tk.Label ( self.insert_datos, text= " Rut de cliente: " + (self.row_data[0]) ).place ( x=35, y=10, width=200, height=20 )
+        tk.Label ( self.insert_datos, text= " Rut de cliente: " + (self.row_data[1]) ).place ( x=35, y=10, width=200, height=20 )
         tk.Label ( self.insert_datos, text="Nombre: " ).place ( x=10, y=40, width=80, height=20 )
         tk.Label ( self.insert_datos, text="Apellido: " ).place ( x=10, y=70, width=80, height=20 )
         tk.Label ( self.insert_datos, text="Dirección: " ).place ( x=10, y=100, width=80, height=20 )
@@ -172,6 +172,6 @@ class modificar_cliente:  # Clase para modificar
                                 "apellido_cli": self.entry_apellido.get(),
                                 "direccion_cli": self.entry_direccion.get(),
                                 "telefono_cli": self.entry_telefono.get(),
-                                "rut_cliente": self.row_data[0]} )
+                                "rut_cliente": self.row_data[1]} )
         self.insert_datos.destroy ()
         self.padre.llenar_treeview_cliente ()

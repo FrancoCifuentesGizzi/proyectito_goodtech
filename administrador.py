@@ -67,12 +67,12 @@ class administrador:
         b5 = Button ( frame, text="Empleados", width=20 )
         b5.grid ( row=4, column=0, padx=padx, pady=pady )
         # b5.bind ( '<Button-1>', self.__mostrar_bodegas )
-        b5.config ( background="dark goldenrod" )
+        b5.config ( background="red" )
 
         b6 = Button ( frame, text="Productos", width=20 )
         b6.grid ( row=5, column=0, padx=padx, pady=pady )
         # b6.bind ( '<Button-1>', self.__mostrar_bodegas )
-        b6.config ( background="dark goldenrod" )
+        b6.config ( background="red" )
 
         b7 = Button ( frame, text="Marcas", width=20 )
         b7.grid ( row=6, column=0, padx=padx, pady=pady )
@@ -82,12 +82,12 @@ class administrador:
         b8 = Button ( frame, text="Venta", width=20 )
         b8.grid ( row=7, column=0, padx=padx, pady=pady )
         # b8.bind ( '<Button-1>', self.__mostrar_bodegas )
-        b8.config ( background="dark goldenrod" )
+        b8.config ( background="red" )
 
         b9 = Button ( frame, text="Detalle venta", width=20 )
         b9.grid ( row=8, column=0, padx=padx, pady=pady )
         # b9.bind ( '<Button-1>', self.__mostrar_bodegas )
-        b9.config ( background="dark goldenrod" )
+        b9.config ( background="red" )
 
     # imagen principal.
     def __agrega_imagen_principal(self):

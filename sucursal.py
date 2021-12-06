@@ -42,14 +42,14 @@ class sucursal:
 
     #Configuración de los botones
     def __config_buttons_sucursal(self):
-        tk.Button(self.root, command = self.__Agregar_S, text="Agregar sucursal").place(x = 0, y = 350, width = 366, height = 50)
-        tk.Button(self.root, command = self.__Editar_S, text="Modificar datos").place(x = 366, y = 350, width = 366, height = 50)
-        tk.Button(self.root, command = self.__Eliminar_S, text="Eliminar sucursal").place(x = 732, y = 350, width = 366, height = 50)
+        ttk.Button(self.root, command = self.__Agregar_S, text="Agregar sucursal").place(x = 0, y = 350, width = 366, height = 50)
+        ttk.Button(self.root, command = self.__Editar_S, text="Modificar datos").place(x = 366, y = 350, width = 366, height = 50)
+        ttk.Button(self.root, command = self.__Eliminar_S, text="Eliminar sucursal").place(x = 732, y = 350, width = 366, height = 50)
 
     def llenar_treeview_sucursal(self):
         sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod 
            from sucursal join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad 
-           join bodega on sucursal.bodega_id_bodega = bodega.id_bodega"""
+           join bodega on sucursal.bodega_id_bodega = bodega.id_bodega order by id_sucursal asc"""
         data = self.db.run_select ( sql )
 
         if (data != self.data):
@@ -72,8 +72,8 @@ class sucursal:
             editar_sucursal ( self.db, self, row_data )
 
 
-    def __Eliminar_S():
-        sql = "delete from sucursal where id_sucursal = %(id_sucursal)s"
+    def __Eliminar_S(self):
+        sql = """delete from sucursal where id_sucursal = %(id_sucursal)s"""
         self.db.run_sql ( sql, {"id_sucursal": self.treeview.focus ()} )
         self.llenar_treeview_sucursal ()
 
@@ -102,31 +102,31 @@ class Add_Sucursal:
 
     #Configuración de las casillas que el usuario ingresa info
     def __config_entry(self):
-        self.entry_nombre = tk.Entry(self.add)
+        self.entry_nombre = ttk.Entry(self.add)
         self.entry_nombre.place(x = 100, y = 10, width = 100, height = 20)
-        self.entry_direccion = tk.Entry(self.add)
+        self.entry_direccion = ttk.Entry(self.add)
         self.entry_direccion.place(x = 100, y = 35, width = 100, height = 20)
-        self.entry_telefono = tk.Entry(self.add)
+        self.entry_telefono = ttk.Entry(self.add)
         self.entry_telefono.place(x = 100, y = 60, width = 100, height = 20)
         self.combociudad = ttk.Combobox(self.add)
         self.combociudad.place(x = 100, y = 85, width = 100, height = 20)
-        self.combociudad["values"], self.ids = self.__fill_combo_ciudad ()
+        self.combociudad["values"], self.city = self.__fill_combo_ciudad ()
         self.combobodega = ttk.Combobox(self.add)
         self.combobodega.place(x = 100, y = 110, width = 100, height = 20)
-        self.combobodega["values"], self.ids = self.__fill_combo_bodega ()
+        self.combobodega["values"], self.alm = self.__fill_combo_bodega ()
 
         #Configuración de los botones
     def __config_buttons(self):
-        tk.Button(self.add, text="Aceptar",
+        ttk.Button(self.add, text="Aceptar",
                   command = self.__insertar).place(x = 55, y = 145, width = 105, height = 30)
 
     def __fill_combo_ciudad(self):
-        sql = "select id_ciudad, nombre_ciu from ciudad"
+        sql = "select id_ciudad, nombre_ciu from ciudad order by id_ciudad asc"
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
     def __fill_combo_bodega(self):
-        sql = "select id_bodega, nombre_bod from bodega"
+        sql = "select id_bodega, nombre_bod from bodega order by id_bodega asc"
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
@@ -136,8 +136,8 @@ class Add_Sucursal:
         self.db.run_sql ( sql, {"nombre_suc": self.entry_nombre.get (),
                                 "direccion_suc": self.entry_direccion.get (),
                                 "telefono_suc": self.entry_telefono.get (),
-                                "ciudad_id_ciudad": self.ids[self.combociudad.current ()],
-                                "bodega_id_bodega": self.ids[self.combobodega.current ()]} )
+                                "ciudad_id_ciudad": self.city[self.combociudad.current ()],
+                                "bodega_id_bodega": self.alm[self.combobodega.current ()]} )
         self.add.destroy ()
         self.padre.llenar_treeview_sucursal ()
 
@@ -169,18 +169,18 @@ class editar_sucursal:  # Clase para modificar
         # Configuración de las casillas que el usuario ingresa info
 
     def __config_entry(self):
-        self.entry_nombre = tk.Entry(self.insert_datos)
+        self.entry_nombre = ttk.Entry(self.insert_datos)
         self.entry_nombre.place(x = 100, y = 35, width = 100, height = 20)
-        self.entry_direccion = tk.Entry(self.insert_datos)
+        self.entry_direccion = ttk.Entry(self.insert_datos)
         self.entry_direccion.place(x = 100, y = 60, width = 100, height = 20)
-        self.entry_telefono = tk.Entry(self.insert_datos)
+        self.entry_telefono = ttk.Entry(self.insert_datos)
         self.entry_telefono.place(x = 100, y = 85, width = 100, height = 20)
         self.combociudad = ttk.Combobox(self.insert_datos)
         self.combociudad.place(x = 100, y = 110, width = 100, height = 20)
-        self.combociudad["values"], self.ids = self.fill_combo_ciudad ()
+        self.combociudad["values"], self.city = self.fill_combo_ciudad ()
         self.combobodega = ttk.Combobox ( self.insert_datos )
         self.combobodega.place ( x=100, y=135, width=100, height=20 )
-        self.combobodega["values"], self.ids = self.fill_combo_bodega ()
+        self.combobodega["values"], self.alm = self.fill_combo_bodega ()
         self.entry_nombre.insert ( 0, self.row_data[1] )
         self.entry_direccion.insert ( 0, self.row_data[2] )
         self.entry_telefono.insert ( 0, self.row_data[3] )
@@ -189,7 +189,7 @@ class editar_sucursal:  # Clase para modificar
         # Configuración de los botones
 
     def __config_button(self):
-        tk.Button ( self.insert_datos, text="Aceptar",
+        ttk.Button ( self.insert_datos, text="Aceptar",
                     command=self.modificar ).place ( x=55, y=160, width=105, height=25 )
 
     def modificar(self):  # Insercion en la base de datos.
@@ -199,18 +199,18 @@ class editar_sucursal:  # Clase para modificar
         self.db.run_sql ( sql, {"nombre_suc": self.entry_nombre.get (),
                                 "direccion_suc": self.entry_direccion.get (),
                                 "telefono_suc": self.entry_telefono.get (),
-                                "id_ciudad": self.ids[self.combociudad.current ()],
-                                "id_bodega": self.ids[self.combobodega.current ()],
+                                "id_ciudad": self.city[self.combociudad.current ()],
+                                "id_bodega": self.alm[self.combobodega.current ()],
                                 "id_sucursal": self.row_data[0]} )
         self.insert_datos.destroy ()
         self.padre.llenar_treeview_sucursal ()
 
     def fill_combo_ciudad(self):  #
-        sql = "select id_ciudad, nombre_ciu from ciudad"
+        sql = "select id_ciudad, nombre_ciu from ciudad order by id_ciudad asc"
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
     def fill_combo_bodega(self):  #
-        sql = "select id_bodega, nombre_bod from bodega"
+        sql = "select id_bodega, nombre_bod from bodega order by id_bodega asc"
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
