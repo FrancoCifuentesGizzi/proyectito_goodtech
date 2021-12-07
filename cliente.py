@@ -35,11 +35,11 @@ class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modif
         self.root.after(0, self.llenar_treeview_cliente)
 
     def __config_buttons_cliente(self):  # Botones de insertar, modificar y eliminar
-        tk.Button ( self.root, text="Insertar Cliente",
+        ttk.Button ( self.root, text="Insertar Cliente",
                     command=self.insertar_cliente ).place ( x=0, y=350, width=246, height=50 )
-        tk.Button ( self.root, text="Modificar Cliente",
+        ttk.Button ( self.root, text="Modificar Cliente",
                     command=self.modificar_cliente ).place ( x=246, y=350, width=246, height=50 )
-        tk.Button ( self.root, text="Eliminar Cliente",
+        ttk.Button ( self.root, text="Eliminar Cliente",
                     command=self.eliminar_cliente ).place ( x=492, y=350, width=246, height=50 )
 
     def llenar_treeview_cliente(self):  # Se llena el treeview de datos.
@@ -94,19 +94,19 @@ class insertar_cliente:  # Clase para insertar data
         tk.Label ( self.insert_datos, text="Teléfono: " ).place ( x=10, y=130, width=80, height=20 )
 
     def __config_entry(self):  # Se configuran los inputs
-        self.entry_rut = tk.Entry ( self.insert_datos )
+        self.entry_rut = ttk.Entry ( self.insert_datos )
         self.entry_rut.place ( x=110, y=10, width=150, height=20 )
-        self.entry_nombre = tk.Entry ( self.insert_datos )
+        self.entry_nombre = ttk.Entry ( self.insert_datos )
         self.entry_nombre.place ( x=110, y=40, width=150, height=20 )
-        self.entry_apellido = tk.Entry ( self.insert_datos )
+        self.entry_apellido = ttk.Entry ( self.insert_datos )
         self.entry_apellido.place ( x=110, y=70, width=150, height=20 )
-        self.entry_direccion = tk.Entry ( self.insert_datos )
+        self.entry_direccion = ttk.Entry ( self.insert_datos )
         self.entry_direccion.place ( x=110, y=100, width=150, height=20 )
-        self.entry_telefono = tk.Entry ( self.insert_datos )
+        self.entry_telefono = ttk.Entry ( self.insert_datos )
         self.entry_telefono.place ( x=110, y=130, width=150, height=20 )
 
     def __config_button(self):  # Se configura el boton
-        tk.Button ( self.insert_datos, text="Aceptar",
+        ttk.Button ( self.insert_datos, text="Aceptar",
                     command=self.__insertar ).place ( x=35, y=200, width=200, height=30 )
 
     def __insertar(self):  # Insercion en la base de datos.
@@ -145,13 +145,13 @@ class modificar_cliente:  # Clase para modificar
         tk.Label ( self.insert_datos, text="Teléfono: " ).place ( x=10, y=130, width=80, height=20 )
 
     def config_entry(self):  # Se configuran los inputs
-        self.entry_nombre = tk.Entry ( self.insert_datos )
+        self.entry_nombre = ttk.Entry ( self.insert_datos )
         self.entry_nombre.place ( x=110, y=40, width=150, height=20 )
-        self.entry_apellido = tk.Entry ( self.insert_datos )
+        self.entry_apellido = ttk.Entry ( self.insert_datos )
         self.entry_apellido.place ( x=110, y=70, width=150, height=20 )
-        self.entry_direccion = tk.Entry ( self.insert_datos )
+        self.entry_direccion = ttk.Entry ( self.insert_datos )
         self.entry_direccion.place ( x=110, y=100, width=150, height=20 )
-        self.entry_telefono = tk.Entry ( self.insert_datos )
+        self.entry_telefono = ttk.Entry ( self.insert_datos )
         self.entry_telefono.place ( x=110, y=130, width=150, height=20 )
         self.entry_nombre.insert ( 0, self.row_data[1] )
         self.entry_apellido.insert ( 0, self.row_data[2] )
@@ -162,7 +162,7 @@ class modificar_cliente:  # Clase para modificar
 
 
     def config_button(self):  # Botón aceptar, llama a la función modificar cuando es clickeado.
-        tk.Button ( self.insert_datos, text="Aceptar",
+        ttk.Button ( self.insert_datos, text="Aceptar",
                     command=self.modificar ).place ( x=35, y=190, width=200, height=30 )
 
     def modificar(self):  # Insercion en la base de datos.

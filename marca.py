@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+
+
 class marca:
     #Configuración de la ventana principal
     def __init__(self, root, db):
@@ -31,9 +33,9 @@ class marca:
 
     #Configuración de los botones
     def __config_buttons_marca(self):
-        tk.Button(self.root, command = self.__Agregar_M, text="Agregar").place(x = 0, y = 350, width = 100, height = 50)
-        tk.Button(self.root, command = self.__Editar_M, text="Editar").place(x = 100, y = 350, width = 100, height = 50)
-        tk.Button(self.root, command = self.__Eliminar_M, text="Eliminar").place(x = 200, y = 350, width = 100, height = 50)
+        ttk.Button(self.root, command = self.__Agregar_M, text="Agregar").place(x = 0, y = 350, width = 100, height = 50)
+        ttk.Button(self.root, command = self.__Editar_M, text="Editar").place(x = 100, y = 350, width = 100, height = 50)
+        ttk.Button(self.root, command = self.__Eliminar_M, text="Eliminar").place(x = 200, y = 350, width = 100, height = 50)
 
     def llenar_treeview_marca(self):  # Se llena el treeview de datos.
         sql = "select * from marca"
@@ -47,7 +49,7 @@ class marca:
             for i in data:
                 # Inserta los datos
                 self.treeview.insert ( "", "end", text=i[0],
-                                       values=(i[1]), iid=i[0] )
+                                       values=(i[1], i[1]), iid=i[0] )
             self.data = data  # Actualiza la data
 
     def __Agregar_M(self):
@@ -85,12 +87,12 @@ class Add_Marca:
 
     #Configuración de las casillas que el usuario ingresa info
     def __config_entry(self):
-        self.entry_nombre = tk.Entry(self.add)
+        self.entry_nombre = ttk.Entry(self.add)
         self.entry_nombre.place(x = 100, y = 10, width = 130, height = 20)
 
     #Configuración de los botones
     def __config_buttons(self):
-        tk.Button(self.add, text="Aceptar",
+        ttk.Button(self.add, text="Aceptar",
             command = self.insertar).place ( x=75, y=45, width=105, height=25 )
 
     def insertar(self):  # Insercion en la base de datos.
@@ -127,7 +129,7 @@ class Editar_Marca:
 
     # Configuración de los botones
     def __config_button(self):
-        tk.Button ( self.insert_datos, text="Aceptar",
+        ttk.Button ( self.insert_datos, text="Aceptar",
                     command=self.modificar ).place ( x=75, y=75, width=105, height=25 )
 
     def modificar(self):  # Insercion en la base de datos.

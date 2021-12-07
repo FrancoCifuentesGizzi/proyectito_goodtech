@@ -8,6 +8,8 @@ from cliente import cliente
 from sucursal import sucursal
 from ciudad import ciudad
 from bodega import bodega
+from empleado import empleado
+from marca import marca
 
 
 class administrador:
@@ -66,27 +68,27 @@ class administrador:
 
         b5 = Button ( frame, text="Empleados", width=20 )
         b5.grid ( row=4, column=0, padx=padx, pady=pady )
-        # b5.bind ( '<Button-1>', self.__mostrar_bodegas )
-        b5.config ( background="red" )
+        b5.bind ( '<Button-1>', self.__mostrar_empleados )
+        b5.config ( background="dark goldenrod" )
 
         b6 = Button ( frame, text="Productos", width=20 )
         b6.grid ( row=5, column=0, padx=padx, pady=pady )
-        # b6.bind ( '<Button-1>', self.__mostrar_bodegas )
+        # b6.bind ( '<Button-1>', self. )
         b6.config ( background="red" )
 
         b7 = Button ( frame, text="Marcas", width=20 )
         b7.grid ( row=6, column=0, padx=padx, pady=pady )
-        # b7.bind ( '<Button-1>', self.__mostrar_bodegas )
+        b7.bind ( '<Button-1>', self.__mostrar_marcas )
         b7.config ( background="dark goldenrod" )
 
         b8 = Button ( frame, text="Venta", width=20 )
         b8.grid ( row=7, column=0, padx=padx, pady=pady )
-        # b8.bind ( '<Button-1>', self.__mostrar_bodegas )
+        # b8.bind ( '<Button-1>', self. )
         b8.config ( background="red" )
 
         b9 = Button ( frame, text="Detalle venta", width=20 )
         b9.grid ( row=8, column=0, padx=padx, pady=pady )
-        # b9.bind ( '<Button-1>', self.__mostrar_bodegas )
+        # b9.bind ( '<Button-1>', self. )
         b9.config ( background="red" )
 
     # imagen principal.
@@ -112,6 +114,12 @@ class administrador:
 
     def __mostrar_bodegas(self, button):
         bodega ( self.root, self.db )
+
+    def __mostrar_marcas(self, button):
+        marca ( self.root, self.db )
+
+    def __mostrar_empleados(self, button):
+        empleado ( self.root, self.db )
 
 
 def main():

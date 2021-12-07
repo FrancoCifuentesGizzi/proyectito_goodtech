@@ -32,9 +32,9 @@ class ciudad:
 
     #Configuración de los botones
     def __config_buttons_ciudad(self):
-        tk.Button(self.root, command = self.__Agregar_C, text="Agregar").place(x = 0, y = 350, width = 100, height = 50)
-        tk.Button(self.root, command = self.__Editar_C, text="Editar").place(x = 100, y = 350, width = 100, height = 50)
-        tk.Button(self.root, command = self.__Eliminar_C, text="Eliminar").place(x = 200, y = 350, width = 100, height = 50)
+        ttk.Button(self.root, command = self.__Agregar_C, text="Agregar").place(x = 0, y = 350, width = 100, height = 50)
+        ttk.Button(self.root, command = self.__Editar_C, text="Editar").place(x = 100, y = 350, width = 100, height = 50)
+        ttk.Button(self.root, command = self.__Eliminar_C, text="Eliminar").place(x = 200, y = 350, width = 100, height = 50)
 
     def llenar_treeview_ciudades(self):  # Se llena el treeview de datos.
         sql = """select * from ciudad order by id_ciudad asc;"""
@@ -89,7 +89,7 @@ class Add_Ciudad:
 
     #Configuración de los botones
     def __config_buttons(self):
-        tk.Button(self.add, text="Aceptar",
+        ttk.Button(self.add, text="Aceptar",
             command = self.insertar).place ( x=75, y=45, width=105, height=25 )
 
     def insertar(self):  # Insercion en la base de datos.
@@ -123,14 +123,14 @@ class editar_ciudad:  # Clase para modificar
         # Configuración de las casillas que el usuario ingresa info
 
     def __config_entry(self):
-        self.entry_nombre = tk.Entry ( self.insert_datos )
+        self.entry_nombre = ttk.Entry ( self.insert_datos )
         self.entry_nombre.place ( x=100, y=40, width=130, height=20 )
         self.entry_nombre.insert ( 0, self.row_data[1] )
 
         # Configuración de los botones
 
     def __config_button(self):
-        tk.Button ( self.insert_datos, text="Aceptar",
+        ttk.Button ( self.insert_datos, text="Aceptar",
                     command=self.modificar ).place ( x=75, y=75, width=105, height=25 )
 
     def modificar(self):  # Insercion en la base de datos.

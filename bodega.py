@@ -39,10 +39,10 @@ class bodega:
 
     #Configuración de los botones
     def __config_buttons_bodega(self):
-        tk.Button(self.root, text="Agregar bodega",
+        ttk.Button(self.root, text="Agregar bodega",
             command = self.__Agregar_B).place(x = 0, y = 350, width = 300, height = 50)
-        tk.Button(self.root, command = self.__Editar_B, text="Modificar datos").place(x = 300, y = 350, width = 300, height = 50)
-        tk.Button(self.root, command = self.__Eliminar_B, text="Eliminar bodega").place(x = 600, y = 350, width = 300, height = 50)
+        ttk.Button(self.root, command = self.__Editar_B, text="Modificar datos").place(x = 300, y = 350, width = 300, height = 50)
+        ttk.Button(self.root, command = self.__Eliminar_B, text="Eliminar bodega").place(x = 600, y = 350, width = 300, height = 50)
 
     def llenar_treeview_bodega(self):
         sql = """select id_bodega, nombre_bod, direccion_bod, telefono_bod, nombre_ciu
@@ -95,11 +95,11 @@ class Add_bodega:
 
     #Configuración de las casillas que el usuario ingresa info
     def __config_entry(self):
-        self.entry_nombre = tk.Entry(self.add)
+        self.entry_nombre = ttk.Entry(self.add)
         self.entry_nombre.place(x = 100, y = 10, width = 100, height = 20)
-        self.entry_direccion = tk.Entry(self.add)
+        self.entry_direccion = ttk.Entry(self.add)
         self.entry_direccion.place(x = 100, y = 35, width = 100, height = 20)
-        self.entry_telefono = tk.Entry(self.add)
+        self.entry_telefono = ttk.Entry(self.add)
         self.entry_telefono.place(x = 100, y = 60, width = 100, height = 20)
         self.combo_ciudad = ttk.Combobox(self.add)
         self.combo_ciudad.place(x = 100, y = 85, width = 100, height = 20)
@@ -107,7 +107,7 @@ class Add_bodega:
 
         #Configuración de los botones
     def __config_button(self):
-        tk.Button(self.add, text="Aceptar", command = self.__insertar).place(x = 55, y = 120, width = 105, height = 30)
+        ttk.Button(self.add, text="Aceptar", command = self.__insertar).place(x = 55, y = 120, width = 105, height = 30)
 
     def __fill_combo(self):
         sql = """select id_ciudad, nombre_ciu from ciudad order by id_ciudad asc"""
@@ -152,11 +152,11 @@ class editar_bodega:  # Clase para modificar
         # Configuración de las casillas que el usuario ingresa info
 
     def __config_entry(self):
-        self.entry_nombre = tk.Entry(self.insert_datos)
+        self.entry_nombre = ttk.Entry(self.insert_datos)
         self.entry_nombre.place(x = 100, y = 30, width = 100, height = 20)
-        self.entry_direccion = tk.Entry(self.insert_datos)
+        self.entry_direccion = ttk.Entry(self.insert_datos)
         self.entry_direccion.place(x = 100, y = 60, width = 100, height = 20)
-        self.entry_telefono = tk.Entry(self.insert_datos)
+        self.entry_telefono = ttk.Entry(self.insert_datos)
         self.entry_telefono.place(x = 100, y = 90, width = 100, height = 20)
         self.combo = ttk.Combobox(self.insert_datos)
         self.combo.place(x = 100, y = 120, width = 100, height = 20)
@@ -169,7 +169,7 @@ class editar_bodega:  # Clase para modificar
         # Configuración de los botones
 
     def __config_button(self):
-        tk.Button ( self.insert_datos, text="Aceptar",
+        ttk.Button ( self.insert_datos, text="Aceptar",
                     command=self.modificar ).place ( x=55, y=160, width=105, height=25 )
 
     def modificar(self):  # Insercion en la base de datos.

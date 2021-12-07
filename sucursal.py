@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-# !!importar la bodega!!
-
 class sucursal:
     #Configuración de la ventana principal
     def __init__(self, root, db):
@@ -159,7 +157,7 @@ class editar_sucursal:  # Clase para modificar
         self.insert_datos.resizable ( width=0, height=0 )
 
     def __config_label(self):
-        tk.Label ( self.insert_datos, text= "Modificar " + (self.row_data[1]) ).place ( x=5, y=10, width=250, height=20 )
+        tk.Label ( self.insert_datos, text= "Modificar " + (self.row_data[1]) ).place ( x=0, y=10, width=240, height=20 )
         tk.Label ( self.insert_datos, text="Nombre: " ).place ( x=0, y=35, width=100, height=20 )
         tk.Label ( self.insert_datos, text="Direccion: " ).place ( x=0, y=60, width=100, height=20 )
         tk.Label ( self.insert_datos, text="Telefono: " ).place ( x=0, y=85, width=100, height=20 )
