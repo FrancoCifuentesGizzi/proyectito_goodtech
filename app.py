@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter as ttk
 from tkinter import Menu
 from tkinter import LabelFrame, Label, Frame
 from tkinter import Button
@@ -35,15 +36,25 @@ class App:
         pady = 2
 
         #
-        frame = LabelFrame ( self.root, text="", relief=tk.GROOVE )
-        frame.place ( x=144, y=315, width=475,  relheight=0.10 )
+        frame = LabelFrame ( self.root, text="Selccionar perfil", relief=tk.GROOVE )
+        frame.place ( x=147, y=315, width=466,  relheight=0.12 )
         frame.config ( background="royalblue4" )
 
         #
-        b1 = Button ( frame, text="Administrador", width=20 )
+        b1 = ttk.Button ( frame, text="Administrador", width=20 )
         b1.grid ( row=1, column=0, padx=padx, pady=pady )
         b1.bind ( '<Button-1>', self.__administrador )
         b1.config ( background="cyan4" )
+
+        b2 = ttk.Button ( frame, text="Empleado -Venta", width=20 )
+        b2.grid ( row=1, column=2, padx=padx, pady=pady )
+        #b2.bind ( '<Button-1>', self. )
+        b2.config ( background="cyan4" )
+
+        b3 = ttk.Button ( frame, text="Administrador Bodega", width=20 )
+        b3.grid ( row=1, column=3, padx=padx, pady=pady )
+        #b3.bind ( '<Button-1>', self. )
+        b3.config ( background="cyan4" )
 
 
     # imagen principal.
