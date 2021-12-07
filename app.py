@@ -12,7 +12,7 @@ class App:
     def __init__(self, db):
         self.db = db
         # Main window
-        self.root = tk.Tk ()
+        self.root = ttk.Tk ()
 
         # Algunas especificaciones de tamaño y título de la ventana
         self.root.geometry ( "760x420" )

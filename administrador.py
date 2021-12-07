@@ -9,6 +9,7 @@ from sucursal import sucursal
 from ciudad import ciudad
 from bodega import bodega
 from empleado import empleado
+from producto import producto
 from marca import marca
 
 
@@ -73,8 +74,8 @@ class administrador:
 
         b6 = Button ( frame, text="Productos", width=20 )
         b6.grid ( row=5, column=0, padx=padx, pady=pady )
-        # b6.bind ( '<Button-1>', self. )
-        b6.config ( background="red" )
+        b6.bind ( '<Button-1>', self.__mostrar_productos )
+        b6.config ( background="dark goldenrod" )
 
         b7 = Button ( frame, text="Marcas", width=20 )
         b7.grid ( row=6, column=0, padx=padx, pady=pady )
@@ -115,11 +116,17 @@ class administrador:
     def __mostrar_bodegas(self, button):
         bodega ( self.root, self.db )
 
+    def __mostrar_empleados(self, button):
+        empleado ( self.root, self.db )
+
+    def __mostrar_productos(self, button):
+        producto ( self.root, self.db )
+
+
     def __mostrar_marcas(self, button):
         marca ( self.root, self.db )
 
-    def __mostrar_empleados(self, button):
-        empleado ( self.root, self.db )
+
 
 
 def main():

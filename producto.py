@@ -34,19 +34,19 @@ class producto:
         self.treeview.column("#3", minwidth = 200, width = 200, stretch = False)
         self.treeview.column("#4", minwidth = 200, width = 200, stretch = False)
         self.treeview.place(x = 0, y = 0, height = 350, width = 900)
-        #self.llenar_treeview_producto ()
-        #self.root.after ( 0, self.llenar_treeview_producto)
+        self.llenar_treeview_producto ()
+        self.root.after ( 0, self.llenar_treeview_producto)
 
     #Configuración de los botones
     def __config_buttons_producto(self):
-        tk.Button(self.root, command = self.__Agregar_P, text="Agregar producto").place(x = 0, y = 350, width = 300, height = 50)
-        tk.Button(self.root, command = self.__Editar_P, text="Modificar datos").place(x = 300, y = 350, width = 300, height = 50)
-        tk.Button(self.root, command = self.__Eliminar_P, text="Eliminar producto").place(x = 600, y = 350, width = 300, height = 50)
+        ttk.Button(self.root, command = self.__Agregar_P, text="Agregar producto").place(x = 0, y = 350, width = 300, height = 50)
+        ttk.Button(self.root, command = self.__Editar_P, text="Modificar datos").place(x = 300, y = 350, width = 300, height = 50)
+        ttk.Button(self.root, command = self.__Eliminar_P, text="Eliminar producto").place(x = 600, y = 350, width = 300, height = 50)
 
     def llenar_treeview_producto(self):
-        sql = """select id_pro, nombre_pro, precio_pro, nombre_marca, nombre_bod
-            from producto join marca on producto.marca_id_marca = marca.id_ciudad
-            join bodega on producto.bodega_id_bodega = bodega.id_bodega;"""
+        sql = """select id_producto, nombre_pro, precio_pro, marca.nombre_marca, bodega.nombre_bod
+            from producto join marca on producto.marca_id_marca = marca.id_marca
+            join bodega on producto.bodega_id_bodega = bodega.id_bodega order by id_producto asc"""
         data = self.db.run_select ( sql )
 
         if (data != self.data):
@@ -61,14 +61,16 @@ class producto:
 
     def __Editar_P(self):
         if (self.treeview.focus () != ""):
-            sql = "select id_bodega, nombre_bod, direccion_bod, telefono_bod, ciudad.nombre_ciu from bodega " \
-                  "join ciudad on bodega.ciudad_id_ciudad = ciudad.id_ciudad where id_bodega = %(id_bodega)s"
-            row_data = self.db.run_select_filter ( sql, {"id_bodega": self.treeview.focus ()} )[0]
-            editar_bodega ( self.db, self, row_data )
+            sql = """select id_producto, nombre_pro, precio_pro, marca.nombre_marca, bodega.nombre_bod from producto 
+                join marca on producto.marca_id_marca = marca.id_marca 
+                join bodega on producto.bodega_id_bodega = bodega.id_bodega where id_producto = %(id_producto)s"""
+            row_data = self.db.run_select_filter ( sql, {"id_producto": self.treeview.focus ()} )[0]
+            editar_producto ( self.db, self, row_data )
 
-    def __Eliminar_P():
-        print("Heyo")
-        #Del_Empleado
+    def __Eliminar_P(self):
+        sql = """delete from producto where id_producto = %(id_producto)s"""
+        self.db.run_sql ( sql, {"id_producto": self.treeview.focus ()} )
+        self.llenar_treeview_producto ()
 
 class Add_producto:
     #Configuración de la ventana agregar
@@ -88,26 +90,26 @@ class Add_producto:
     #Configuración de los labels
     def __config_label(self):
         tk.Label(self.add ,text = "Nombre: ").place(x = 0, y = 10, width = 100, height = 20)
-        tk.Label(self.add ,text = "Precio: ").place(x = 0, y = 30, width = 100, height = 20)
-        tk.Label(self.add ,text = "Marca: ").place(x = 0, y = 50, width = 100, height = 20)
-        tk.Label(self.add ,text = "Bodega: ").place(x = 0, y = 70, width = 100, height = 20)
+        tk.Label(self.add ,text = "Precio: ").place(x = 0, y = 35, width = 100, height = 20)
+        tk.Label(self.add ,text = "Marca: ").place(x = 0, y = 60, width = 100, height = 20)
+        tk.Label(self.add ,text = "Bodega: ").place(x = 0, y = 85, width = 100, height = 20)
 
     #Configuración de las casillas que el usuario ingresa info
     def __config_entry(self):
-        self.entry_nombre = tk.Entry(self.add)
+        self.entry_nombre = ttk.Entry(self.add)
         self.entry_nombre.place(x = 100, y = 10, width = 100, height = 20)
-        self.entry_precio = tk.Entry(self.add)
-        self.entry_precio.place(x = 100, y = 30, width = 100, height = 20)
+        self.entry_precio = ttk.Entry(self.add)
+        self.entry_precio.place(x = 100, y = 35, width = 100, height = 20)
         self.combo_marca = ttk.Combobox(self.add)
-        self.combo_marca.place(x = 100, y = 50, width = 100, height = 20)
-        self.combo_marca["values"], self.ids = self.__fill_combo_marca ()
+        self.combo_marca.place(x = 100, y = 60, width = 100, height = 20)
+        self.combo_marca["values"], self.marca = self.__fill_combo_marca ()
         self.combo_bodega = ttk.Combobox(self.add)
-        self.combo_bodega.place(x = 100, y = 70, width = 100, height = 20)
-        self.combo_bodega["values"], self.ids = self.__fill_combo_bodega ()
+        self.combo_bodega.place(x = 100, y = 85, width = 100, height = 20)
+        self.combo_bodega["values"], self.bod = self.__fill_combo_bodega ()
 
         #Configuración de los botones
     def __config_button(self):
-        tk.Button(self.add, text="Aceptar", command = self.__insertar).place(x = 55, y = 120, width = 105, height = 30)
+        ttk.Button(self.add, text="Aceptar", command = self.__insertar).place(x = 55, y = 130, width = 105, height = 25)
 
     def __fill_combo_marca(self):
         sql = "select id_marca, nombre_marca from marca"
@@ -123,9 +125,9 @@ class Add_producto:
         sql = """insert into producto (nombre_pro, precio_pro, marca_id_marca, bodega_id_bodega )
             values (%(nombre_pro)s, %(precio_pro)s, %(marca_id_marca)s, %(bodega_id_bodega)s)"""
         self.db.run_sql ( sql, {"nombre_pro": self.entry_nombre.get (),
-                                "precio_pro": self.entry_direccion.get (),
-                                "marca_id_marca": self.ids[self.combo_marca.current ()],
-                                "bodega_id_bodega": self.ids[self.combo_bodega.current ()]} )
+                                "precio_pro": self.entry_precio.get (),
+                                "marca_id_marca": self.marca[self.combo_marca.current ()],
+                                "bodega_id_bodega": self.bod[self.combo_bodega.current ()]} )
         self.add.destroy ()
         self.padre.llenar_treeview_producto()
 
@@ -142,31 +144,31 @@ class editar_producto:  # Clase para modificar
         self.__config_button ()
 
     def config_window(self):  # Configuración de la ventana.
-        self.insert_datos.geometry ( '250x260' )
+        self.insert_datos.geometry ( '220x190' )
         self.insert_datos.title ( "Editar datos" )
         self.insert_datos.resizable ( width=0, height=0 )
 
 
     def __config_label(self):
-        tk.Label ( self.insert_datos, text= "Modificar " + (self.row_data[1]) ).place ( x=5, y=10, width=250, height=20 )
-        tk.Label ( self.insert_datos, text="Nombre: " ).place ( x=0, y=30, width=100, height=20 )
+        tk.Label ( self.insert_datos, text= "Modificar " + (self.row_data[1]) ).place ( x=0, y=10, width=240, height=20 )
+        tk.Label ( self.insert_datos, text="Nombre: " ).place ( x=0, y=35, width=100, height=20 )
         tk.Label ( self.insert_datos, text="Precio: " ).place ( x=0, y=60, width=100, height=20 )
-        tk.Label ( self.insert_datos, text="Marca: " ).place ( x=0, y=90, width=100, height=20 )
-        tk.Label ( self.insert_datos, text="Bodega: " ).place ( x=0, y=120, width=100, height=20 )
+        tk.Label ( self.insert_datos, text="Marca: " ).place ( x=0, y=85, width=100, height=20 )
+        tk.Label ( self.insert_datos, text="Bodega: " ).place ( x=0, y=110, width=100, height=20 )
 
         # Configuración de las casillas que el usuario ingresa info
 
     def __config_entry(self):
-        self.entry_nombre = tk.Entry(self.insert_datos)
-        self.entry_nombre.place(x = 100, y = 30, width = 100, height = 20)
-        self.entry_precio = tk.Entry(self.insert_datos)
+        self.entry_nombre = ttk.Entry(self.insert_datos)
+        self.entry_nombre.place(x = 100, y = 35, width = 100, height = 20)
+        self.entry_precio = ttk.Entry(self.insert_datos)
         self.entry_precio.place(x = 100, y = 60, width = 100, height = 20)
-        self.combo_marca = ttk.Combobox(self.add)
-        self.combo_marca.place(x = 100, y = 50, width = 100, height = 20)
-        self.combo_marca["values"], self.ids = self.__fill_combo_marca ()
-        self.combo_bodega = ttk.Combobox(self.add)
-        self.combo_bodega.place(x = 100, y = 70, width = 100, height = 20)
-        self.combo_bodega["values"], self.ids = self.__fill_combo_bodega ()
+        self.combo_marca = ttk.Combobox(self.insert_datos)
+        self.combo_marca.place(x = 100, y = 85, width = 100, height = 20)
+        self.combo_marca["values"], self.marca = self.__fill_combo_marca ()
+        self.combo_bodega = ttk.Combobox(self.insert_datos)
+        self.combo_bodega.place(x = 100, y = 110, width = 100, height = 20)
+        self.combo_bodega["values"], self.bod = self.__fill_combo_bodega ()
         self.entry_nombre.insert ( 0, self.row_data[1] )
         self.entry_precio.insert ( 0, self.row_data[2] )
         self.combo_marca.insert ( 0, self.row_data[3] )
@@ -175,17 +177,15 @@ class editar_producto:  # Clase para modificar
         # Configuración de los botones
 
     def __config_button(self):
-        tk.Button ( self.insert_datos, command=self.modificar, text="Aceptar" ).place ( x=55, y=160, width=105, height=25 )
+        ttk.Button ( self.insert_datos, command=self.modificar, text="Aceptar" ).place ( x=64, y=150, width=105, height=25 )
 
     def modificar(self):  # Insercion en la base de datos.
         sql = """update producto set nombre_pro = %(nombre_pro)s, precio_pro = %(precio_pro)s,
-                marca_id_marca = %(id_marca)s, bodega_id_bodega = %(id_bodega)s
-                where id_bodega = %(id_bodega)s"""
-        self.db.run_sql ( sql, {"nombre_bod": self.entry_nombre.get (),
-                                "direccion_bod": self.entry_direccion.get (),
-                                "telefono_bod": self.entry_telefono.get (),
-                                "id_marca": self.ids[self.combo_marca.current ()],
-                                "id_bodega": self.ids[self.combo_bodega.current ()],
+            marca_id_marca = %(id_marca)s, bodega_id_bodega = %(id_bodega)s where id_producto = %(id_producto)s"""
+        self.db.run_sql ( sql, {"nombre_pro": self.entry_nombre.get (),
+                                "precio_pro": self.entry_precio.get (),
+                                "id_marca": self.marca[self.combo_marca.current ()],
+                                "id_bodega": self.bod[self.combo_bodega.current ()],
                                 "id_producto": self.row_data[0]} )
         self.insert_datos.destroy ()
         self.padre.llenar_treeview_producto ()
