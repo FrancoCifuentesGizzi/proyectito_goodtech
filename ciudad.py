@@ -58,10 +58,13 @@ class ciudad:
         row_data = self.db.run_select_filter ( sql, {"id_ciudad": self.treeview.focus ()} )[0]
         editar_ciudad ( self.db, self, row_data )
 
+
     def __Eliminar_C(self):
         sql = "delete from ciudad where id_ciudad = %(id_ciudad)s"
         self.db.run_sql ( sql, {"id_ciudad": self.treeview.focus ()} )
         self.llenar_treeview_ciudades ()
+
+
 
 class Add_Ciudad:
     #Configuración de la ventana agregar

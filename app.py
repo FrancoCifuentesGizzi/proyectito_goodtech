@@ -7,9 +7,6 @@ from PIL import Image, ImageTk
 
 from database import Database
 from administrador import administrador
-from cliente import cliente
-from sucursal import sucursal
-from ciudad import ciudad
 
 class App:
     def __init__(self, db):
