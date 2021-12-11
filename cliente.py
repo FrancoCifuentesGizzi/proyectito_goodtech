@@ -66,9 +66,9 @@ class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modif
         modificar_cliente ( self.db, self, row_data )
 
     def eliminar_cliente(self):
-        sql = "delete from cliente where rut_cliente = %(rut_cliente)s"
-        self.db.run_sql ( sql, {"rut_cliente": self.treeview.focus ()} )
-        self.llenar_treeview_cliente ()
+        sql = "select * from cliente where rut_cliente = %(rut_cliente)s"
+        row_data = self.db.run_select_filter ( sql, {"rut_cliente": self.treeview.focus ()} )[0]
+        Eliminar_Cliente( self.db, self, row_data )
 
 
 class insertar_cliente:  # Clase para insertar data
@@ -110,7 +110,7 @@ class insertar_cliente:  # Clase para insertar data
                     command=self.__insertar ).place ( x=35, y=200, width=200, height=30 )
 
     def __insertar(self):  # Insercion en la base de datos.
-        sql = """insert into cliente (rut_cliente, nombre_cli, apellido_cli, direccion_cli, telefono_cli) 
+        sql = """insert into cliente (rut_cliente, nombre_cli, apellido_cli, direccion_cli, telefono_cli)
                 values (%(rut_cliente)s, %(nombre_cli)s, %(apellido_cli)s, %(direccion_cli)s, %(telefono_cli)s)"""
         self.db.run_sql ( sql, {"rut_cliente": self.entry_rut.get (),
                                 "nombre_cli": self.entry_nombre.get (),
@@ -174,4 +174,39 @@ class modificar_cliente:  # Clase para modificar
                                 "telefono_cli": self.entry_telefono.get(),
                                 "rut_cliente": self.row_data[1]} )
         self.insert_datos.destroy ()
+        self.padre.llenar_treeview_cliente ()
+
+class Eliminar_Cliente:
+    def __init__(self, db, padre, row_data):
+        self.padre = padre
+        self.db = db
+        self.row_data = row_data
+        self.del_datos = tk.Toplevel ()
+        self.config_window ()
+        self.__config_label ()
+        self.__config_button ()
+
+    # Configuración de la ventana
+    def config_window(self):
+        self.del_datos.geometry ( '250x170' )
+        self.del_datos.title ( "Eliminando datos" )
+        self.del_datos.resizable ( width=0, height=0 )
+
+    def __config_label(self):
+        tk.Label ( self.del_datos, text= "Se eliminará los siguientes datos: ").place ( x=5, y=10, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Nombre: " + (self.row_data[2])).place( x=5, y=30, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Apellido: " + (self.row_data[3])).place( x=5, y=50, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Rut: " + (self.row_data[1])).place( x=5, y=70, width=250, height=20 )
+
+    def __config_button(self):
+        ttk.Button(self.del_datos, command = self.__Cancelar, text="Cancelar").place(x = 0, y = 120, width = 100, height = 50)
+        ttk.Button(self.del_datos, command = self.__Aceptar, text="Aceptar").place(x = 150, y = 120, width = 100, height = 50)
+
+    def __Cancelar(self):
+        self.del_datos.destroy()
+
+    def __Aceptar(self):
+        sql = "delete from cliente where rut_cliente = %(rut_cliente)s"
+        self.db.run_sql ( sql, {"rut_cliente": int ( self.row_data[1] )} )
+        self.del_datos.destroy ()
         self.padre.llenar_treeview_cliente ()

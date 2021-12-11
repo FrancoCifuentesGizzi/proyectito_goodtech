@@ -67,9 +67,9 @@ class bodega:
             editar_bodega ( self.db, self, row_data )
 
     def __Eliminar_B(self):
-        sql = """delete from bodega where id_bodega = %(id_bodega)s"""
-        self.db.run_sql ( sql, {"id_bodega": self.treeview.focus ()} )
-        self.llenar_treeview_bodega ()
+        sql = "select * from bodega where id_bodega = %(id_bodega)s"
+        row_data = self.db.run_select_filter ( sql, {"id_bodega": self.treeview.focus ()} )[0]
+        Eliminar_Bodega( self.db, self, row_data )
 
 class Add_bodega:
     #Configuración de la ventana agregar
@@ -188,3 +188,38 @@ class editar_bodega:  # Clase para modificar
         sql = "select id_ciudad, nombre_ciu from ciudad order by id_ciudad asc"
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
+
+# Clase para eliminar
+class Eliminar_Bodega:
+    def __init__(self, db, padre, row_data):
+        self.padre = padre
+        self.db = db
+        self.row_data = row_data
+        self.del_datos = tk.Toplevel ()
+        self.config_window ()
+        self.__config_label ()
+        self.__config_button ()
+
+    # Configuración de la ventana
+    def config_window(self):
+        self.del_datos.geometry ( '250x150' )
+        self.del_datos.title ( "Eliminando datos" )
+        self.del_datos.resizable ( width=0, height=0 )
+
+    def __config_label(self):
+        tk.Label ( self.del_datos, text= "Se eliminará los siguientes datos: ").place ( x=5, y=10, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Nombre: " + (self.row_data[1])).place( x=5, y=30, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Dirección: " + (self.row_data[3])).place( x=5, y=50, width=250, height=20 )
+
+    def __config_button(self):
+        ttk.Button(self.del_datos, command = self.__Cancelar, text="Cancelar").place(x = 0, y = 100, width = 100, height = 50)
+        ttk.Button(self.del_datos, command = self.__Aceptar, text="Aceptar").place(x = 150, y = 100, width = 100, height = 50)
+
+    def __Cancelar(self):
+        self.del_datos.destroy()
+
+    def __Aceptar(self):
+        sql = "delete from bodega where id_bodega = %(id_bodega)s"
+        self.db.run_sql ( sql, {"id_bodega": int ( self.row_data[0] )} )
+        self.del_datos.destroy ()
+        self.padre.llenar_treeview_bodega ()

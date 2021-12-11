@@ -45,8 +45,8 @@ class sucursal:
         ttk.Button(self.root, command = self.__Eliminar_S, text="Eliminar sucursal").place(x = 732, y = 350, width = 366, height = 50)
 
     def llenar_treeview_sucursal(self):
-        sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod 
-           from sucursal join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad 
+        sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod
+           from sucursal join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad
            join bodega on sucursal.bodega_id_bodega = bodega.id_bodega order by id_sucursal asc"""
         data = self.db.run_select ( sql )
 
@@ -63,17 +63,17 @@ class sucursal:
 
     def __Editar_S(self):
         if (self.treeview.focus () != ""):
-            sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod from sucursal 
-                join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad 
+            sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod from sucursal
+                join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad
                 join bodega on sucursal.bodega_id_bodega = bodega.id_bodega where id_sucursal = %(id_sucursal)s"""
             row_data = self.db.run_select_filter ( sql, {"id_sucursal": self.treeview.focus ()} )[0]
             editar_sucursal ( self.db, self, row_data )
 
 
     def __Eliminar_S(self):
-        sql = """delete from sucursal where id_sucursal = %(id_sucursal)s"""
-        self.db.run_sql ( sql, {"id_sucursal": self.treeview.focus ()} )
-        self.llenar_treeview_sucursal ()
+        sql = "select * from sucursal where id_sucursal = %(id_sucursal)s"
+        row_data = self.db.run_select_filter ( sql, {"id_sucursal": self.treeview.focus ()} )[0]
+        Eliminar_Sucursal( self.db, self, row_data )
 
 class Add_Sucursal:
     #Configuración de la ventana agregar
@@ -129,7 +129,7 @@ class Add_Sucursal:
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
     def __insertar(self):  # Insercion en la base de datos.
-        sql = """insert sucursal (nombre_suc, direccion_suc, telefono_suc, ciudad_id_ciudad, bodega_id_bodega ) 
+        sql = """insert sucursal (nombre_suc, direccion_suc, telefono_suc, ciudad_id_ciudad, bodega_id_bodega )
             values (%(nombre_suc)s, %(direccion_suc)s, %(telefono_suc)s, %(ciudad_id_ciudad)s, %(bodega_id_bodega)s);"""
         self.db.run_sql ( sql, {"nombre_suc": self.entry_nombre.get (),
                                 "direccion_suc": self.entry_direccion.get (),
@@ -191,7 +191,7 @@ class editar_sucursal:  # Clase para modificar
                     command=self.modificar ).place ( x=55, y=160, width=105, height=25 )
 
     def modificar(self):  # Insercion en la base de datos.
-        sql = """update sucursal set nombre_suc = %(nombre_suc)s, direccion_suc = %(direccion_suc)s, 
+        sql = """update sucursal set nombre_suc = %(nombre_suc)s, direccion_suc = %(direccion_suc)s,
                 telefono_suc = %(telefono_suc)s, ciudad_id_ciudad = %(id_ciudad)s, bodega_id_bodega = %(id_bodega)s
                 where id_sucursal = %(id_sucursal)s"""
         self.db.run_sql ( sql, {"nombre_suc": self.entry_nombre.get (),
@@ -212,3 +212,38 @@ class editar_sucursal:  # Clase para modificar
         sql = "select id_bodega, nombre_bod from bodega order by id_bodega asc"
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
+
+class Eliminar_Sucursal:
+    def __init__(self, db, padre, row_data):
+        self.padre = padre
+        self.db = db
+        self.row_data = row_data
+        self.del_datos = tk.Toplevel ()
+        self.config_window ()
+        self.__config_label ()
+        self.__config_button ()
+
+    # Configuración de la ventana
+    def config_window(self):
+        self.del_datos.geometry ( '250x170' )
+        self.del_datos.title ( "Eliminando datos" )
+        self.del_datos.resizable ( width=0, height=0 )
+
+    def __config_label(self):
+        tk.Label ( self.del_datos, text= "Se eliminará los siguientes datos: ").place ( x=5, y=10, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Nombre: " + (self.row_data[1])).place( x=5, y=30, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Dirección: " + (self.row_data[2])).place( x=5, y=50, width=250, height=20 )
+        # tk.Label ( self.del_datos, text= "Ciudad: " + (self.row_data[4])).place( x=5, y=70, width=250, height=20 ) # Me gustaria agregar Ciudad pero no cacho porque es solo la ID y no deja usar INT
+
+    def __config_button(self):
+        ttk.Button(self.del_datos, command = self.__Cancelar, text="Cancelar").place(x = 0, y = 120, width = 100, height = 50)
+        ttk.Button(self.del_datos, command = self.__Aceptar, text="Aceptar").place(x = 150, y = 120, width = 100, height = 50)
+
+    def __Cancelar(self):
+        self.del_datos.destroy()
+
+    def __Aceptar(self):
+        sql = "delete from sucursal where id_sucursal = %(id_sucursal)s"
+        self.db.run_sql ( sql, {"id_sucursal": int ( self.row_data[0] )} )
+        self.del_datos.destroy ()
+        self.padre.llenar_treeview_sucursal ()

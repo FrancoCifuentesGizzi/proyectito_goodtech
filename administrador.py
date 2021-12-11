@@ -11,6 +11,7 @@ from bodega import bodega
 from empleado import empleado
 from producto import producto
 from marca import marca
+from perfil import perfil
 
 
 class administrador:
@@ -92,6 +93,11 @@ class administrador:
         # b9.bind ( '<Button-1>', self. )
         b9.config ( background="red" )
 
+        b10 = Button ( frame, text="Perfiles", width=20 )
+        b10.grid ( row=9, column=0, padx=padx, pady=pady )
+        b10.bind ( '<Button-1>', self.__mostrar_perfil )
+        b10.config ( background="dark goldenrod" )
+
     # imagen principal.
     def __agrega_imagen_principal(self):
         #
@@ -125,6 +131,9 @@ class administrador:
 
     def __mostrar_marcas(self, button):
         marca ( self.root, self.db )
+
+    def __mostrar_perfil(self, button):
+        perfil ( self.root, self.db )
 
 
 

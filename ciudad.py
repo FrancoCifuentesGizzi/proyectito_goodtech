@@ -60,9 +60,9 @@ class ciudad:
 
 
     def __Eliminar_C(self):
-        sql = "delete from ciudad where id_ciudad = %(id_ciudad)s"
-        self.db.run_sql ( sql, {"id_ciudad": self.treeview.focus ()} )
-        self.llenar_treeview_ciudades ()
+        sql = "select * from ciudad where id_ciudad = %(id_ciudad)s"
+        row_data = self.db.run_select_filter ( sql, {"id_ciudad": self.treeview.focus ()} )[0]
+        Eliminar_Ciudad( self.db, self, row_data )
 
 
 
@@ -143,3 +143,35 @@ class editar_ciudad:  # Clase para modificar
         self.insert_datos.destroy ()
         self.padre.llenar_treeview_ciudades ()
 
+# Clase para eliminar
+class Eliminar_Ciudad:
+    def __init__(self, db, padre, row_data):
+        self.padre = padre
+        self.db = db
+        self.row_data = row_data
+        self.del_datos = tk.Toplevel ()
+        self.config_window ()
+        self.__config_label ()
+        self.__config_button ()
+
+    # Configuración de la ventana
+    def config_window(self):
+        self.del_datos.geometry ( '250x130' )
+        self.del_datos.title ( "Eliminando datos" )
+        self.del_datos.resizable ( width=0, height=0 )
+
+    def __config_label(self):
+        tk.Label ( self.del_datos, text= "Se eliminará los siguientes datos: ").place ( x=5, y=10, width=250, height=20 )
+        tk.Label ( self.del_datos, text= "Nombre: " + (self.row_data[1])).place( x=5, y=30, width=250, height=20 )
+    def __config_button(self):
+        ttk.Button(self.del_datos, command = self.__Cancelar, text="Cancelar").place(x = 0, y = 80, width = 100, height = 50)
+        ttk.Button(self.del_datos, command = self.__Aceptar, text="Aceptar").place(x = 150, y = 80, width = 100, height = 50)
+
+    def __Cancelar(self):
+        self.del_datos.destroy()
+
+    def __Aceptar(self):
+        sql = "delete from ciudad where id_ciudad = %(id_ciudad)s"
+        self.db.run_sql ( sql, {"id_ciudad": int ( self.row_data[0] )} )
+        self.del_datos.destroy ()
+        self.padre.llenar_treeview_ciudades ()
