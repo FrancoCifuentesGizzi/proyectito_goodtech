@@ -12,7 +12,6 @@ from empleado import empleado
 from producto import producto
 from marca import marca
 from perfil import perfil
-from Ingreso import Ingreso
 
 
 class administrador:
@@ -99,11 +98,6 @@ class administrador:
         b10.bind ( '<Button-1>', self.__mostrar_perfil )
         b10.config ( background="dark goldenrod" )
 
-        b11 = Button ( frame, text="Intento Ingreso", width=20 )
-        b11.grid ( row=10, column=0, padx=padx, pady=pady )
-        b11.bind ( '<Button-1>', self.__mostrar_Ingreso )
-        b11.config ( background="dark goldenrod" )
-
     # imagen principal.
     def __agrega_imagen_principal(self):
         #
@@ -140,9 +134,6 @@ class administrador:
 
     def __mostrar_perfil(self, button):
         perfil ( self.root, self.db )
-
-    def __mostrar_Ingreso(self, button):
-        Ingreso ( self.root, self.db )
 
 
 
