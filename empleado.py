@@ -133,7 +133,9 @@ class Add_Empleado:
                                 "apellido_emp": self.entry_apellido.get (),
                                 "telefono_emp": self.entry_telefono.get (),
                                 "sucursal_id_sucursal": self.ids[self.combosucursal.current()],
-                                "perfil_id_perfil": self.ids[self.comboperfil.current ()]} )
+                                "perfil_id_perfil": self.ids[self.comboperfil.current ()]})
+        self.add.destroy ()
+        self.padre.llenar_treeview_empleado()
 
 
 class editar_empleado:  # Clase para modificar
