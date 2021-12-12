@@ -191,7 +191,7 @@ class editar_empleado:  # Clase para modificar
 
     def modificar(self):  # Insercion en la base de datos.
         sql = """update empleado set nombre_emp = %(nombre_emp)s, apellido_emp = %(apellido_emp)s,
-            telefono_emp = %(telefono_emp)s, sucursal_id_sucursal = %(id_sucursal)s, %(id_perfil)
+            telefono_emp = %(telefono_emp)s, sucursal_id_sucursal = %(id_sucursal)s, perfil_id_perfil = %(id_perfil)
             where id_empleado = %(id_empleado)s"""
         self.db.run_sql ( sql, {"nombre_emp": self.entry_nombre.get (),
                                 "apellido_emp": self.entry_apellido.get (),
