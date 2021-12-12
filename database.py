@@ -1,4 +1,6 @@
 import mysql.connector
+
+
 class Database:
     def __init__(self):
         self.db = None
@@ -6,9 +8,12 @@ class Database:
         try:  # Intenta conectarse a la base de datos
             self.db = mysql.connector.connect ( host="localhost",
                                                 user="proyecto", passwd="pass123", database="goodtech" )
+
             self.cursor = self.db.cursor ()
             print("Conectado exitosamente")
-            print ( "GOOD - TECH" )
+            print ( "  ======   =====   =====  =====          =======  =====  =====  //  // \n"
+                    " // ____  //  //  //  //  //   \   ====   / /    //___  //     //==//  \n"
+                    "//____/  //__//  //__//  //___/          /_/    //___  //___  //  //\n" )
         except mysql.connector.Error as err:  # Si no puede, avisa
             print("No conectó a la base de datos")
             print(err)
