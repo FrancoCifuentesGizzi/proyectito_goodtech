@@ -8,12 +8,13 @@ from tkinter import messagebox
 
 class marca:
     #Configuración de la ventana principal
-    def __init__(self, root, db, b7):
+    def __init__(self, root, db, b7, __limpia_pantalla):
         self.db = db
         self.data = []
         self.root = root
         self.boton = b7
         self.boton.config ( background="cyan" )
+        self.__limpia_pantalla = __limpia_pantalla
 
         self.__config_treeview_marca()
         self.__config_buttons_marca()
@@ -57,20 +58,25 @@ class marca:
         Add_Marca(self.db, self, self.root)
 
     def __Editar_M(self):
-        sql = "select * from marca where id_marca = %(id_marca)s"
-        row_data = self.db.run_select_filter ( sql, {"id_marca": self.treeview.focus ()} )[0]
-        Editar_Marca ( self.db, self, row_data, self.root )
+        if (self.treeview.focus () != ""):
+            sql = "select * from marca where id_marca = %(id_marca)s"
+            row_data = self.db.run_select_filter ( sql, {"id_marca": self.treeview.focus ()} )[0]
+            Editar_Marca ( self.db, self, row_data, self.root )
+        else:
+            messagebox.showinfo ( self.root, message="Seleccione un objeto de la lista" )
 
     def __Eliminar_M(self):
-        ke_dijo = messagebox.askyesno ( message="¿Seguro que desea borrar esta información?" )
-        if (ke_dijo == True):
-            sql = "delete from marca where id_marca = %(id_marca)s"
-            self.db.run_sql ( sql, {"id_marca": self.treeview.focus ()} )
-            self.llenar_treeview_marca ()
+        if (self.treeview.focus () != ""):
+            ke_dijo = messagebox.askyesno ( message="¿Seguro que desea borrar esta información?" )
+            if (ke_dijo == True):
+                sql = "delete from marca where id_marca = %(id_marca)s"
+                self.db.run_sql ( sql, {"id_marca": self.treeview.focus ()} )
+                self.llenar_treeview_marca ()
 
     def __Cerrar_M(self):
         self.boton.config ( background="dark goldenrod" )
         self.treeview.place_forget ()
+        self.__limpia_pantalla()
 
 #Añadir para la tabla
 class Add_Marca:

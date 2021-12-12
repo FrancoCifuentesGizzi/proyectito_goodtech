@@ -7,12 +7,13 @@ from tkinter import messagebox
 
 class ciudad:
     #Configuración de la ventana principal
-    def __init__(self, root, db, b3):
+    def __init__(self, root, db, b3, __limpia_pantalla):
         self.db = db
         self.data = []
         self.root = root
         self.boton = b3
         self.boton.config ( background="cyan" )
+        self.__limpia_pantalla = __limpia_pantalla
 
         #Contenido Ventana
         self.__config_treeview_ciudad()
@@ -55,21 +56,26 @@ class ciudad:
         Add_Ciudad(self.db, self, self.root)
 
     def __Editar_C(self):
-        sql = "select * from ciudad where id_ciudad = %(id_ciudad)s"
-        row_data = self.db.run_select_filter ( sql, {"id_ciudad": self.treeview.focus ()} )[0]
-        editar_ciudad ( self.db, self, row_data, self.root )
+        if (self.treeview.focus () != ""):
+            sql = "select * from ciudad where id_ciudad = %(id_ciudad)s"
+            row_data = self.db.run_select_filter ( sql, {"id_ciudad": self.treeview.focus ()} )[0]
+            editar_ciudad ( self.db, self, row_data, self.root )
+        else:
+            messagebox.showinfo ( self.root, message="Seleccione un objeto de la lista" )
 
 
     def __Eliminar_C(self):
-        ke_dijo = messagebox.askyesno ( message="¿Seguro que desea borrar esta información?" )
-        if (ke_dijo == True):
-            sql = "delete from ciudad where id_ciudad = %(id_ciudad)s"
-            self.db.run_sql ( sql, {"id_ciudad": self.treeview.focus ()} )
-            self.llenar_treeview_ciudades ()
+        if (self.treeview.focus () != ""):
+            ke_dijo = messagebox.askyesno ( message="¿Seguro que desea borrar esta información?" )
+            if (ke_dijo == True):
+                sql = "delete from ciudad where id_ciudad = %(id_ciudad)s"
+                self.db.run_sql ( sql, {"id_ciudad": self.treeview.focus ()} )
+                self.llenar_treeview_ciudades ()
 
     def __Cerrar_C(self):
         self.boton.config ( background="dark goldenrod" )
         self.treeview.place_forget ()
+        self.__limpia_pantalla ()
 
 
 class Add_Ciudad:

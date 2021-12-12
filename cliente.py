@@ -5,14 +5,14 @@ from tkinter import LabelFrame, Label, Frame
 from tkinter import Button
 from tkinter import messagebox
 
-
 class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modificar
-    def __init__(self, root, db, b1):
+    def __init__(self, root, db, b1, __limpia_pantalla):
         self.db = db
         self.data = []
         self.root = root
         self.boton = b1
         self.boton.config ( background="cyan" )
+        self.__limpia_pantalla = __limpia_pantalla
 
         self.__config_treeview_cliente ()
         self.__config_buttons_cliente ()
@@ -63,20 +63,25 @@ class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modif
         insertar_cliente( self.db, self, self.root )
 
     def modificar_cliente(self):
-        sql = "select * from cliente where rut_cliente = %(rut_cliente)s"
-        row_data = self.db.run_select_filter ( sql, {"rut_cliente": self.treeview.focus ()} )[0]
-        modificar_cliente ( self.db, self, row_data, self.root )
+        if (self.treeview.focus () != ""):
+            sql = "select * from cliente where rut_cliente = %(rut_cliente)s"
+            row_data = self.db.run_select_filter ( sql, {"rut_cliente": self.treeview.focus ()} )[0]
+            modificar_cliente ( self.db, self, row_data, self.root )
+        else:
+            messagebox.showinfo ( self.root, message="Seleccione un objeto de la lista" )
 
     def eliminar_cliente(self):
-        ke_dijo = messagebox.askyesno ( message="¿Seguro que desea borrar esta información?")
-        if (ke_dijo == True):
-            sql = "delete from cliente where rut_cliente = %(rut_cliente)s"
-            self.db.run_sql ( sql, {"rut_cliente": self.treeview.focus ()} )
-            self.llenar_treeview_cliente ()
+        if (self.treeview.focus () != ""):
+            ke_dijo = messagebox.askyesno ( message="¿Seguro que desea borrar esta información?")
+            if (ke_dijo == True):
+                sql = "delete from cliente where rut_cliente = %(rut_cliente)s"
+                self.db.run_sql ( sql, {"rut_cliente": self.treeview.focus ()} )
+                self.llenar_treeview_cliente ()
 
     def cerrar_cliente(self):
         self.boton.config ( background="dark goldenrod" )
         self.treeview.place_forget ()
+        self.__limpia_pantalla ()
 
 
 

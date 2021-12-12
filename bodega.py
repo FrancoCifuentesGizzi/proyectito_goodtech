@@ -1,23 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import Menu
+from tkinter import LabelFrame, Label, Frame
+from tkinter import Button
+from tkinter import messagebox
 
 class bodega:
     #Configuración de la ventana principal
-    def __init__(self, root, db):
-
+    def __init__(self, root, db, b4, __limpia_pantalla):
         self.db = db
         self.data = []
-
-        self.root = tk.Toplevel()
-        self.root.geometry('900x400')
-        self.root.title("Bodegas")
-        self.root.resizable(width=0, height=0)
-        self.root.transient(root)
+        self.root = root
+        self.boton = b4
+        self.boton.config ( background="cyan" )
+        self.__limpia_pantalla = __limpia_pantalla
 
         self.__config_treeview_bodega()
         self.__config_buttons_bodega()
-
-        self.root.mainloop()
 
     #Configuración de las tablas y su tamaño
     def __config_treeview_bodega(self):
@@ -28,24 +27,28 @@ class bodega:
         self.treeview.heading("#2", text = "Direccion")
         self.treeview.heading("#3", text = "Telefono")
         self.treeview.heading("#4", text = "Ciudad")
-        self.treeview.column("#0", minwidth = 100, width = 100, stretch = False)
-        self.treeview.column("#1", minwidth = 200, width = 200, stretch = False)
-        self.treeview.column("#2", minwidth = 200, width = 200, stretch = False)
-        self.treeview.column("#3", minwidth = 200, width = 200, stretch = False)
-        self.treeview.column("#4", minwidth = 200, width = 200, stretch = False)
-        self.treeview.place(x = 0, y = 0, height = 350, width = 1100)
+        self.treeview.column("#0", minwidth = 30, width = 70, stretch = False)
+        self.treeview.column("#1", minwidth = 40, width = 165, stretch = False)
+        self.treeview.column("#2", minwidth = 40, width = 165, stretch = False)
+        self.treeview.column("#3", minwidth = 40, width = 165, stretch = False)
+        self.treeview.column("#4", minwidth = 40, width = 165, stretch = False)
+        self.treeview.place(x = 189, y = 26, height = 375, width = 735)
         self.llenar_treeview_bodega ()
         self.root.after ( 0, self.llenar_treeview_bodega)
 
     #Configuración de los botones
     def __config_buttons_bodega(self):
-        ttk.Button(self.root, text="Agregar bodega",
-            command = self.__Agregar_B).place(x = 0, y = 350, width = 300, height = 50)
-        ttk.Button(self.root, command = self.__Editar_B, text="Modificar datos").place(x = 300, y = 350, width = 300, height = 50)
-        ttk.Button(self.root, command = self.__Eliminar_B, text="Eliminar bodega").place(x = 600, y = 350, width = 300, height = 50)
+        ttk.Button ( self.treeview, text="Agregar Bodega",
+                     command=self.__Agregar_B ).place ( x=0, y=340, width=183, height=35 )
+        ttk.Button ( self.treeview, text="Modificar Bodega",
+                     command=self.__Editar_B ).place ( x=183, y=340, width=183, height=35 )
+        ttk.Button ( self.treeview, text="Eliminar Bodega",
+                     command=self.__Eliminar_B ).place ( x=366, y=340, width=183, height=35 )
+        ttk.Button ( self.treeview, text="Cerrar",
+                     command=self.__Cerrar_B ).place ( x=549, y=340, width=183, height=35 )
 
     def llenar_treeview_bodega(self):
-        sql = """select id_bodega, nombre_bod, direccion_bod, telefono_bod, nombre_ciu
+        sql = """select id_bodega, nombre_bod, direccion_bod, telefono_bod, ciudad.nombre_ciu
            from bodega join ciudad on bodega.ciudad_id_ciudad = ciudad.id_ciudad order by id_bodega asc"""
         data = self.db.run_select ( sql )
 
@@ -56,58 +59,69 @@ class bodega:
                                        values=(i[1], i[2], i[3], i[4]), iid=i[0])
             self.data = data
 
+
     def __Agregar_B(self):
-        Add_bodega(self.db, self)
+        Add_bodega(self.db, self, self.root)
 
     def __Editar_B(self):
         if (self.treeview.focus () != ""):
             sql = "select id_bodega, nombre_bod, direccion_bod, telefono_bod, ciudad.nombre_ciu from bodega " \
                   "join ciudad on bodega.ciudad_id_ciudad = ciudad.id_ciudad where id_bodega = %(id_bodega)s"
             row_data = self.db.run_select_filter ( sql, {"id_bodega": self.treeview.focus ()} )[0]
-            editar_bodega ( self.db, self, row_data )
+            editar_bodega ( self.db, self, row_data, self.root )
+        else:
+            messagebox.showinfo ( self.root, message="Seleccione un objeto de la lista" )
 
     def __Eliminar_B(self):
-        sql = "select * from bodega where id_bodega = %(id_bodega)s"
-        row_data = self.db.run_select_filter ( sql, {"id_bodega": self.treeview.focus ()} )[0]
-        Eliminar_Bodega( self.db, self, row_data )
+        if (self.treeview.focus () != ""):
+            ke_dijo = messagebox.askyesno ( message="¿Seguro que desea borrar esta información?" )
+            if (ke_dijo == True):
+                sql = """delete from bodega where id_bodega = %(id_bodega)s"""
+                self.db.run_sql ( sql, {"id_bodega": self.treeview.focus ()} )
+                self.llenar_treeview_bodega ()
+
+    def __Cerrar_B(self):
+        self.boton.config ( background="dark goldenrod" )
+        self.treeview.place_forget ()
+        self.__limpia_pantalla ()
 
 class Add_bodega:
     #Configuración de la ventana agregar
-    def __init__(self, db, padre):
+    def __init__(self, db, padre, root):
         self.padre = padre
         self.db = db
-
-        self.add = tk.Toplevel()
-        self.add.geometry('210x170')
-        self.add.title("Agregar")
-        self.add.resizable(width=0, height=0)
-        #Contenido Ventana
+        self.root = root
         self.__config_label()
         self.__config_entry()
         self.__config_button()
 
     #Configuración de los labels
     def __config_label(self):
-        tk.Label(self.add ,text = "Nombre: ").place(x = 0, y = 10, width = 100, height = 20)
-        tk.Label(self.add ,text = "Direccion: ").place(x = 0, y = 35, width = 100, height = 20)
-        tk.Label(self.add ,text = "Telefono: ").place(x = 0, y = 60, width = 100, height = 20)
-        tk.Label(self.add ,text = "Ciudad: ").place(x = 0, y = 85, width = 100, height = 20)
+        self.insert_datos = LabelFrame ( self.root, text="" )
+        self.insert_datos.place ( x=189, y=405, width=735, height=120 )
+        Label(self.insert_datos ,text = "Nombre: ").place(x = 10, y = 10, width = 80, height = 20)
+        Label(self.insert_datos ,text = "Direccion: ").place(x = 10, y = 35, width = 80, height = 20)
+        Label(self.insert_datos ,text = "Telefono: ").place(x = 10, y = 60, width = 80, height = 20)
+        Label(self.insert_datos ,text = "Ciudad: ").place(x = 270, y = 10, width = 80, height = 20)
 
     #Configuración de las casillas que el usuario ingresa info
     def __config_entry(self):
-        self.entry_nombre = ttk.Entry(self.add)
-        self.entry_nombre.place(x = 100, y = 10, width = 100, height = 20)
-        self.entry_direccion = ttk.Entry(self.add)
-        self.entry_direccion.place(x = 100, y = 35, width = 100, height = 20)
-        self.entry_telefono = ttk.Entry(self.add)
-        self.entry_telefono.place(x = 100, y = 60, width = 100, height = 20)
-        self.combo_ciudad = ttk.Combobox(self.add)
-        self.combo_ciudad.place(x = 100, y = 85, width = 100, height = 20)
+        self.entry_nombre = ttk.Entry(self.insert_datos)
+        self.entry_nombre.place(x = 90, y = 10, width = 150, height = 20)
+        self.entry_direccion = ttk.Entry(self.insert_datos)
+        self.entry_direccion.place(x = 90, y = 35, width = 150, height = 20)
+        self.entry_telefono = ttk.Entry(self.insert_datos)
+        self.entry_telefono.place(x = 90, y = 60, width = 150, height = 20)
+        self.combo_ciudad = ttk.Combobox(self.insert_datos)
+        self.combo_ciudad.place(x = 340, y = 10, width = 150, height = 20)
         self.combo_ciudad["values"], self.ids = self.__fill_combo ()
 
         #Configuración de los botones
-    def __config_button(self):
-        ttk.Button(self.add, text="Aceptar", command = self.__insertar).place(x = 55, y = 120, width = 105, height = 30)
+    def __config_button(self):  # Se configura el boton
+        ttk.Button ( self.insert_datos, text="Aceptar",
+                    command=self.__insertar ).place ( x=510, y=10, width=200, height=30 )
+        ttk.Button ( self.insert_datos, text="Cancelar",
+                     command=self.__borra ).place ( x=510, y=40, width=200, height=30 )
 
     def __fill_combo(self):
         sql = """select id_ciudad, nombre_ciu from ciudad order by id_ciudad asc"""
@@ -121,56 +135,53 @@ class Add_bodega:
                                 "direccion_bod": self.entry_direccion.get (),
                                 "telefono_bod": self.entry_telefono.get (),
                                 "ciudad_id_ciudad": self.ids[self.combo_ciudad.current ()]} )
-        self.add.destroy ()
+        self.insert_datos.place_forget ()
         self.padre.llenar_treeview_bodega()
+
+    def __borra(self):
+        self.insert_datos.place_forget ()
 
 
 class editar_bodega:  # Clase para modificar
-    def __init__(self, db, padre, row_data):
+    def __init__(self, db, padre, row_data, root):
         self.padre = padre
         self.db = db
         self.row_data = row_data
-        self.insert_datos = tk.Toplevel ()
-        self.config_window ()
+        self.root = root
         self.__config_label ()
         self.__config_entry ()
         self.__config_button ()
 
-    def config_window(self):  # Configuración de la ventana.
-        self.insert_datos.geometry ( '250x260' )
-        self.insert_datos.title ( "Editar datos" )
-        self.insert_datos.resizable ( width=0, height=0 )
-
-
     def __config_label(self):
-        tk.Label ( self.insert_datos, text= "Modificar " + (self.row_data[1]) ).place ( x=5, y=10, width=250, height=20 )
-        tk.Label ( self.insert_datos, text="Nombre: " ).place ( x=0, y=30, width=100, height=20 )
-        tk.Label ( self.insert_datos, text="Direccion: " ).place ( x=0, y=60, width=100, height=20 )
-        tk.Label ( self.insert_datos, text="Telefono: " ).place ( x=0, y=90, width=100, height=20 )
-        tk.Label ( self.insert_datos, text="Ciudad: " ).place ( x=0, y=120, width=100, height=20 )
+        self.insert_datos = LabelFrame ( self.root, text="" )
+        self.insert_datos.place ( x=189, y=405, width=735, height=120 )
+        Label ( self.insert_datos, text="Nombre: " ).place ( x=10, y=10, width=80, height=20 )
+        Label ( self.insert_datos, text="Direccion: " ).place ( x=10, y=35, width=80, height=20 )
+        Label ( self.insert_datos, text="Telefono: " ).place ( x=10, y=60, width=80, height=20 )
+        Label ( self.insert_datos, text="Ciudad: " ).place ( x=270, y=10, width=80, height=20 )
 
         # Configuración de las casillas que el usuario ingresa info
 
     def __config_entry(self):
         self.entry_nombre = ttk.Entry(self.insert_datos)
-        self.entry_nombre.place(x = 100, y = 30, width = 100, height = 20)
+        self.entry_nombre.place(x = 90, y = 10, width = 150, height = 20)
         self.entry_direccion = ttk.Entry(self.insert_datos)
-        self.entry_direccion.place(x = 100, y = 60, width = 100, height = 20)
+        self.entry_direccion.place(x = 90, y = 35, width = 150, height = 20)
         self.entry_telefono = ttk.Entry(self.insert_datos)
-        self.entry_telefono.place(x = 100, y = 90, width = 100, height = 20)
+        self.entry_telefono.place(x = 90, y = 60, width = 150, height = 20)
         self.combo = ttk.Combobox(self.insert_datos)
-        self.combo.place(x = 100, y = 120, width = 100, height = 20)
+        self.combo.place(x = 340, y = 10, width = 150, height = 20)
         self.combo["values"], self.ids = self.fill_combo ()
         self.entry_nombre.insert ( 0, self.row_data[1] )
         self.entry_direccion.insert ( 0, self.row_data[2] )
         self.entry_telefono.insert ( 0, self.row_data[3] )
         self.combo.insert ( 0, self.row_data[4] )
 
-        # Configuración de los botones
-
-    def __config_button(self):
+    def __config_button(self):  # Botón aceptar, llama a la función modificar cuando es clickeado.
         ttk.Button ( self.insert_datos, text="Aceptar",
-                    command=self.modificar ).place ( x=55, y=160, width=105, height=25 )
+                    command=self.modificar ).place ( x=510, y=10, width=200, height=30 )
+        ttk.Button ( self.insert_datos, text="Cancelar",
+                     command=self.__borra ).place ( x=510, y=40, width=200, height=30 )
 
     def modificar(self):  # Insercion en la base de datos.
         sql = """update bodega set nombre_bod = %(nombre_bod)s, direccion_bod = %(direccion_bod)s,
@@ -181,7 +192,7 @@ class editar_bodega:  # Clase para modificar
                                 "telefono_bod": self.entry_telefono.get (),
                                 "id_ciudad": self.ids[self.combo.current ()],
                                 "id_bodega": self.row_data[0]} )
-        self.insert_datos.destroy ()
+        self.insert_datos.place_forget ()
         self.padre.llenar_treeview_bodega ()
 
     def fill_combo(self):  #
@@ -189,37 +200,5 @@ class editar_bodega:  # Clase para modificar
         self.data = self.db.run_select ( sql )
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
-# Clase para eliminar
-class Eliminar_Bodega:
-    def __init__(self, db, padre, row_data):
-        self.padre = padre
-        self.db = db
-        self.row_data = row_data
-        self.del_datos = tk.Toplevel ()
-        self.config_window ()
-        self.__config_label ()
-        self.__config_button ()
-
-    # Configuración de la ventana
-    def config_window(self):
-        self.del_datos.geometry ( '250x150' )
-        self.del_datos.title ( "Eliminando datos" )
-        self.del_datos.resizable ( width=0, height=0 )
-
-    def __config_label(self):
-        tk.Label ( self.del_datos, text= "Se eliminará los siguientes datos: ").place ( x=5, y=10, width=250, height=20 )
-        tk.Label ( self.del_datos, text= "Nombre: " + (self.row_data[1])).place( x=5, y=30, width=250, height=20 )
-        tk.Label ( self.del_datos, text= "Dirección: " + (self.row_data[3])).place( x=5, y=50, width=250, height=20 )
-
-    def __config_button(self):
-        ttk.Button(self.del_datos, command = self.__Cancelar, text="Cancelar").place(x = 0, y = 100, width = 100, height = 50)
-        ttk.Button(self.del_datos, command = self.__Aceptar, text="Aceptar").place(x = 150, y = 100, width = 100, height = 50)
-
-    def __Cancelar(self):
-        self.del_datos.destroy()
-
-    def __Aceptar(self):
-        sql = "delete from bodega where id_bodega = %(id_bodega)s"
-        self.db.run_sql ( sql, {"id_bodega": int ( self.row_data[0] )} )
-        self.del_datos.destroy ()
-        self.padre.llenar_treeview_bodega ()
+    def __borra(self):
+        self.insert_datos.place_forget ()

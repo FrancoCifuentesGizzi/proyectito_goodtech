@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter as ttk
 from tkinter import LabelFrame, Label, Frame
 from tkinter import Button
 from PIL import Image, ImageTk
@@ -11,19 +12,15 @@ from bodega import bodega
 from empleado import empleado
 from producto import producto
 from marca import marca
-from perfil import perfil
+from app import app
 
 
 class administrador:
-    def __init__(self, db):
+    def __init__(self, db, root):
         self.db = db
+        self.root = root
         # Main window
-        self.root = tk.Toplevel ()
 
-        # Algunas especificaciones de tamaño y título de la ventana
-        self.root.geometry ( "700x420" )
-        self.root.title ( "Administrador" )
-        # color de ventana
         self.root.config ( background="goldenrod" )
 
         # creación de botones e imagen
@@ -93,10 +90,14 @@ class administrador:
         # b9.bind ( '<Button-1>', self. )
         b9.config ( background="red" )
 
-        b10 = Button ( frame, text="Perfiles", width=20 )
-        b10.grid ( row=9, column=0, padx=padx, pady=pady )
-        b10.bind ( '<Button-1>', self.__mostrar_perfil )
-        b10.config ( background="dark goldenrod" )
+        b_atras = Button ( frame, text="Detalle venta", width=20 )
+        b_atras.place ( row=500, column=400, width=150)
+        b_atras b9.bind ( '<Button-1>', self. )
+        b9.config ( background="red" )
+
+
+
+
 
     # imagen principal.
     def __agrega_imagen_principal(self):
@@ -132,10 +133,8 @@ class administrador:
     def __mostrar_marcas(self, button):
         marca ( self.root, self.db )
 
-    def __mostrar_perfil(self, button):
-        perfil ( self.root, self.db )
-
-
+    def __atras(self, button):
+        __crea
 
 
 def main():

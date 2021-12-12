@@ -145,7 +145,6 @@ class administrador:
         self.__agrega_imagen_principal ()
         self.__crea_botones_principales ()
 
-
     # botones principales.
     def __crea_botones_principales(self):
         padx = 2
@@ -159,7 +158,6 @@ class administrador:
         self.b2 = Button ( self.root, text="Sucursales", width=20 )
         self.b2.place ( x = 30, y = 70)
         self.b2.bind ( '<Button-1>', self.__mostrar_sucursales )
-
 
         #
         self.b3 = Button ( self.root, text="Ciudades", width=20 )
@@ -198,10 +196,10 @@ class administrador:
         self.b9.config ( background="red" )
 
 
-        self.b_atras = Button ( self.root, text="Cerrar sesión", width=20, command= self.btn_hide )
-        self.b_atras.place ( x = 30, y = 490)
+        self.b_atras = ttk.Button ( self.root, text="Cerrar sesión", width=20, command= self.btn_hide )
+        self.b_atras.place ( x = 40, y = 490)
         self.b_atras.bind ( '<Button-1>', self.__atras )
-        self.b_atras.config ( background="red" )
+
 
         self.__botones_dorados()
 
@@ -221,37 +219,40 @@ class administrador:
 
     def __mostrar_clientes(self, button):
         self.__limpia_pantalla()
-        cliente ( self.root, self.db, self.b1)
+        cliente ( self.root, self.db, self.b1, self.__limpia_pantalla)
 
     def __mostrar_sucursales(self, button):
         self.__limpia_pantalla()
-        sucursal ( self.root, self.db)
+        sucursal ( self.root, self.db, self.b2, self.__limpia_pantalla)
 
     def __mostrar_ciudades(self, button):
         self.__limpia_pantalla()
-        ciudad ( self.root, self.db, self.b3)
+        ciudad ( self.root, self.db, self.b3, self.__limpia_pantalla)
 
     def __mostrar_bodegas(self, button):
         self.__limpia_pantalla()
-        bodega ( self.root, self.db )
+        bodega ( self.root, self.db, self.b4, self.__limpia_pantalla )
 
     def __mostrar_empleados(self, button):
         self.__limpia_pantalla()
-        empleado ( self.root, self.db )
+        empleado ( self.root, self.db, self.b5, self.__limpia_pantalla )
 
     def __mostrar_productos(self, button):
         self.__limpia_pantalla()
-        producto ( self.root, self.db )
+        producto ( self.root, self.db, self.b6, self.__limpia_pantalla )
 
     def __mostrar_marcas(self, button):
         self.__limpia_pantalla()
-        marca ( self.root, self.db, self.b7 )
+        marca ( self.root, self.db, self.b7, self.__limpia_pantalla )
 
 
     def __atras(self, button):
-        self.label.master.destroy ()
-        self.b1.place_forget ()
-        Inicio(self.db, self.root)
+        ke_dijo = messagebox.askyesno ( message="¿Desea cerrar sesión?" )
+        if (ke_dijo == True):
+            self.label.master.destroy ()
+            self.b1.place_forget ()
+            Inicio(self.db, self.root)
+
 
     def __limpia_pantalla(self):
         self.label.master.destroy ()
@@ -383,10 +384,6 @@ class adm_bodega:
         self.b1.place_forget ()
 
         Inicio(self.db, self.root)
-
-
-
-
 
 
 
