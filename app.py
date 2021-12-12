@@ -14,6 +14,7 @@ from bodega import bodega
 from empleado import empleado
 from producto import producto
 from marca import marca
+from venta import venta
 
 
 class App:
