@@ -10,7 +10,7 @@ class detalle:
         self.row_data = row_data
         self.detail_data = tk.Toplevel ()
 
-        self.detail_data.geometry('700x400')
+        self.detail_data.geometry('900x400')
         self.detail_data.title("Detalle Venta")
         self.detail_data.resizable(width=0, height=0)
 
@@ -22,26 +22,29 @@ class detalle:
     #Configuración de las tablas y su tamaño
     def __config_treeview_detalles(self):
         self.treeview = ttk.Treeview(self.detail_data)
-        self.treeview.configure(columns = ("#0", "#1", "#2", "#3"))
-        self.treeview.heading("#0", text = "Producto")
-        self.treeview.heading("#1", text = "Id Venta")
-        self.treeview.heading("#2", text = "Precio Unitario")
-        self.treeview.heading("#3", text = "Cantidad")
+        self.treeview.configure(columns = ("#0", "#1", "#2", "#3", "#4"))
+        self.treeview.heading("#0", text = "Id")
+        self.treeview.heading("#1", text = "Producto")
+        self.treeview.heading("#2", text = "Id Venta")
+        self.treeview.heading("#3", text = "Precio Unitario")
+        self.treeview.heading("#4", text = "Cantidad")
         self.treeview.column("#0", minwidth = 100, width = 100, stretch = False)
         self.treeview.column("#1", minwidth = 200, width = 200, stretch = False)
         self.treeview.column("#2", minwidth = 200, width = 200, stretch = False)
         self.treeview.column("#3", minwidth = 200, width = 200, stretch = False)
-        self.treeview.place(x = 0, y = 0, height = 350, width = 700)
+        self.treeview.column("#4", minwidth = 200, width = 200, stretch = False)
+        self.treeview.place(x = 0, y = 0, height = 350, width = 900)
         self.llenar_treeview_detalle ()
         self.detail_data.after ( 0, self.llenar_treeview_detalle )
 
     #Configuración de los botones
     def __config_buttons_detalles(self):
         ttk.Button(self.detail_data, command = self.__Agregar_PV, text="Agregar Producto").place(x = 0, y = 350, width = 275, height = 50)
-        # ttk.Button(self.detail_data, command = self.__Eliminar_PV, text="Eliminar Producto").place(x = 275, y = 350, width = 275, height = 50)
+        ttk.Button(self.detail_data, command = self.__Eliminar_PV, text="Eliminar Producto").place(x = 275, y = 350, width = 275, height = 50)
+
 
     def llenar_treeview_detalle(self):
-        sql = """select nombre_pro, id_venta, precio_venta, cantidad from detalle_venta
+        sql = """select id_detalle, nombre_pro, id_venta, precio_venta, cantidad from detalle_venta
             join producto on detalle_venta.producto_id_producto = producto.id_producto
             join venta on detalle_venta.venta_id_venta = venta.id_venta order by id_venta asc"""
         data = self.db.run_select (sql)
@@ -50,17 +53,19 @@ class detalle:
             self.treeview.delete ( *self.treeview.get_children () )  # Elimina todos los rows del treeview
             for i in data:
                 self.treeview.insert ( "", "end", text=i[0],
-                                       values=(i[1], i[2], i[3]), iid=i[0] )
+                                       values=(i[1], i[2], i[3], i[4]), iid=i[0] )
             self.data = data
 
     def __Agregar_PV(self):
         Add_ProVent(self.db, self, self.row_data)
         self.padre.llenar_treeview_venta ()
 
-    # def __Eliminar_PV(self):
-    #     sql = "select * from detalle_venta where (producto_id_producto = %(producto_id_producto)s AND venta_id_venta = %(venta_id_venta)s)"
-    #     rowerer_data = self.db.run_select_filter ( sql, {"producto_id_producto": self.treeview.focus (), "venta_id_venta": self.treeview.o} )[0]
-    #     Del_ProVent(self.db, self, rowerer_data, row_data)
+    def __Eliminar_PV(self):
+        sql = "select * from detalle_venta where id_detalle = %(id_detalle)s"
+        rowerer_data = self.db.run_select_filter ( sql, {"id_detalle": self.treeview.focus ()} )[0]
+        if rowerer_data[2] == self.row_data[0]:
+            Del_ProVent( self.db, self, rowerer_data, self.row_data )
+            pass
 
 class Add_ProVent:
     #Configuración de la ventana agregar
@@ -117,4 +122,41 @@ class Add_ProVent:
                                 "precio": self.entry_precio.get(),
                                 "current": self.row_data[0]})
         self.add.destroy ()
+        self.padre.llenar_treeview_detalle ()
+
+class Del_ProVent:
+    #Configuración de la ventana agregar
+    def __init__(self, db, padre, rowerer_data, row_data):
+        self.padre = padre
+        self.db = db
+        self.rowerer_data = rowerer_data
+        self.row_data = row_data
+        self.del_datos = tk.Toplevel ()
+        self.config_window ()
+        self.__config_label ()
+        self.__config_button ()
+
+    # Configuración de la ventana
+    def config_window(self):
+        self.del_datos.geometry ( '250x130' )
+        self.del_datos.title ( "Eliminando datos" )
+        self.del_datos.resizable ( width=0, height=0 )
+
+    def __config_label(self):
+        tk.Label ( self.del_datos, text= "Se eliminarán los datos").place ( x=5, y=10, width=250, height=20 )
+    def __config_button(self):
+        ttk.Button(self.del_datos, command = self.__Cancelar, text="Cancelar").place(x = 0, y = 80, width = 100, height = 50)
+        ttk.Button(self.del_datos, command = self.__Aceptar, text="Aceptar").place(x = 150, y = 80, width = 100, height = 50)
+
+    def __Cancelar(self):
+        self.del_datos.destroy()
+
+    def __Aceptar(self):
+        sql = "delete from detalle_venta where id_detalle = %(id_detalle)s"
+        self.db.run_sql ( sql, {"id_detalle": int ( self.rowerer_data[0] )} )
+        sql = """call ProductoOut(%(cantidad)s, %(precio)s, %(current)s);"""
+        self.db.run_sql ( sql, {"cantidad": self.rowerer_data[4],
+                                "precio": self.rowerer_data[3],
+                                "current": self.row_data[0]})
+        self.del_datos.destroy ()
         self.padre.llenar_treeview_detalle ()
