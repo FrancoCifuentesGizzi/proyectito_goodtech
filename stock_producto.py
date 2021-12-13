@@ -18,7 +18,6 @@ class stock_producto:
         self.__config_treeview()
         self.__config_button()
 
-
     #Configuración de las tablas y su tamaño
     def __config_treeview(self):
         self.treeview = ttk.Treeview ( self.root )

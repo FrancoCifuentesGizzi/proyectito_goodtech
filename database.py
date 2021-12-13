@@ -53,6 +53,7 @@ class Database:
         except mysql.connector.Error as err:
             print("")
 
+
     def corre_procedure_sql(self, sql):
         try:
             self.cursor.execute ( sql )

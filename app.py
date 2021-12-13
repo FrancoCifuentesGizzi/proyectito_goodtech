@@ -301,8 +301,6 @@ class administrador:
         self.b11.config ( background="dark goldenrod" )
         #self.b12.config ( background="dark goldenrod" )
 
-
-
 def main():
     # Conecta a la base de datos
     db = Database ()
