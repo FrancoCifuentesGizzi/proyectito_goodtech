@@ -51,8 +51,8 @@ class sucursal:
                      command=self.__Cerrar_S ).place ( x=549, y=340, width=183, height=35 )
 
     def llenar_treeview_sucursal(self):
-        sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod 
-           from sucursal join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad 
+        sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod
+           from sucursal join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad
            join bodega on sucursal.bodega_id_bodega = bodega.id_bodega order by id_sucursal asc"""
         data = self.db.run_select ( sql )
 
@@ -69,8 +69,8 @@ class sucursal:
 
     def __Editar_S(self):
         if (self.treeview.focus () != ""):
-            sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod from sucursal 
-                join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad 
+            sql = """select id_sucursal, nombre_suc, direccion_suc, telefono_suc, ciudad.nombre_ciu, bodega.nombre_bod from sucursal
+                join ciudad on sucursal.ciudad_id_ciudad = ciudad.id_ciudad
                 join bodega on sucursal.bodega_id_bodega = bodega.id_bodega where id_sucursal = %(id_sucursal)s"""
             row_data = self.db.run_select_filter ( sql, {"id_sucursal": self.treeview.focus ()} )[0]
             editar_sucursal ( self.db, self, row_data, self.root )
@@ -143,7 +143,7 @@ class Add_Sucursal:
         return [i[1] for i in self.data], [i[0] for i in self.data]
 
     def __insertar(self):  # Insercion en la base de datos.
-        sql = """insert sucursal (nombre_suc, direccion_suc, telefono_suc, ciudad_id_ciudad, bodega_id_bodega ) 
+        sql = """insert sucursal (nombre_suc, direccion_suc, telefono_suc, ciudad_id_ciudad, bodega_id_bodega )
             values (%(nombre_suc)s, %(direccion_suc)s, %(telefono_suc)s, %(ciudad_id_ciudad)s, %(bodega_id_bodega)s);"""
         self.db.run_sql ( sql, {"nombre_suc": self.entry_nombre.get (),
                                 "direccion_suc": self.entry_direccion.get (),
@@ -205,7 +205,7 @@ class editar_sucursal:  # Clase para modificar
                      command=self.__borra ).place ( x=510, y=40, width=200, height=30 )
 
     def modificar(self):  # Insercion en la base de datos.
-        sql = """update sucursal set nombre_suc = %(nombre_suc)s, direccion_suc = %(direccion_suc)s, 
+        sql = """update sucursal set nombre_suc = %(nombre_suc)s, direccion_suc = %(direccion_suc)s,
                 telefono_suc = %(telefono_suc)s, ciudad_id_ciudad = %(id_ciudad)s, bodega_id_bodega = %(id_bodega)s
                 where id_sucursal = %(id_sucursal)s"""
         self.db.run_sql ( sql, {"nombre_suc": self.entry_nombre.get (),

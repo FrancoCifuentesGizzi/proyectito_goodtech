@@ -16,6 +16,7 @@ from producto import producto
 from marca import marca
 from venta import venta
 from stock_producto import stock_producto
+from perfil import perfil
 
 
 class App:
@@ -201,8 +202,8 @@ class administrador:
 
         self.b11 = Button ( self.root, text="Perfiles", width=20 )
         self.b11.place ( x=30, y=380 )
-        # b11.bind ( '<Button-1>', self. )
-        self.b11.config ( background="red" )
+        self.b11.bind ( '<Button-1>', self.__mostrar_perfil )
+
 
         self.b12 = Button ( self.root, text="Detalles", width=20 )
         self.b12.place ( x=30, y=415 )
@@ -269,6 +270,10 @@ class administrador:
         self.__limpia_pantalla()
         stock_producto ( self.root, self.db, self.b10, self.__limpia_pantalla )
 
+    def __mostrar_perfil(self, button):
+        self.__limpia_pantalla()
+        perfil(self.root, self.db )
+
 
     def __atras(self, button):
         ke_dijo = messagebox.askyesno ( message="¿Desea cerrar sesión?" )
@@ -293,7 +298,7 @@ class administrador:
         self.b8.config ( background="dark goldenrod" )
         #self.b9.config ( background="dark goldenrod" )
         self.b10.config ( background="dark goldenrod" )
-        #self.b11.config ( background="dark goldenrod" )
+        self.b11.config ( background="dark goldenrod" )
         #self.b12.config ( background="dark goldenrod" )
 
 
