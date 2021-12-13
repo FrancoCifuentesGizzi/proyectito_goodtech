@@ -15,6 +15,7 @@ from empleado import empleado
 from producto import producto
 from marca import marca
 from venta import venta
+from perfil import perfil
 
 
 class App:
@@ -187,13 +188,13 @@ class administrador:
 
         self.b8 = Button ( self.root, text="Venta", width=20 )
         self.b8.place ( x = 30, y = 310)
-        # b8.bind ( '<Button-1>', self. )
+        self.b8.bind ( '<Button-1>', self.__mostrar_ventas )
         self.b8.config ( background="red" )
 
 
-        self.b9 = Button ( self.root, text="Detalle venta", width=20 )
+        self.b9 = Button ( self.root, text="Perfil", width=20 )
         self.b9.place ( x = 30, y = 350)
-        # b9.bind ( '<Button-1>', self. )
+        self.b9.bind ( '<Button-1>', self.__mostrar_perfil )
         self.b9.config ( background="red" )
 
 
@@ -245,6 +246,14 @@ class administrador:
     def __mostrar_marcas(self, button):
         self.__limpia_pantalla()
         marca ( self.root, self.db, self.b7, self.__limpia_pantalla )
+
+    def __mostrar_ventas(self, button):
+        self.__limpia_pantalla()
+        venta ( self.root, self.db )
+
+    def __mostrar_perfil(self, button):
+        self.__limpia_pantalla()
+        perfil(self.root, self.db )
 
 
     def __atras(self, button):

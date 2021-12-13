@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-# from detalle import detalle
+from detalle import detalle
 
 class venta:
     #Configuración de la ventana principal
@@ -43,7 +43,7 @@ class venta:
     def __config_buttons_venta(self):
         ttk.Button(self.root, command = self.__Agregar_V, text="Agregar Venta").place(x = 0, y = 350, width = 275, height = 50)
         ttk.Button(self.root, command = self.__Editar_V, text="Modificar Venta").place(x = 275, y = 350, width = 275, height = 50)
-        # ttk.Button(self.root, command = self.__Editar_D, text="Ver Detalles").place(x = 550, y = 350, width = 275, height = 50)
+        ttk.Button(self.root, command = self.__Editar_D, text="Ver Detalles").place(x = 550, y = 350, width = 275, height = 50)
         ttk.Button(self.root, command = self.__Eliminar_V, text="Eliminar Venta").place(x = 825, y = 350, width = 275, height = 50)
 
     def llenar_treeview_venta(self):
@@ -73,14 +73,14 @@ class venta:
             row_data = self.db.run_select_filter ( sql, {"id_venta": self.treeview.focus ()} )[0]
             editar_venta ( self.db, self, row_data )
 
-    # def __Editar_D(self):
-    #     if (self.treeview.focus () != ""):
-    #         sql = """select id_venta, fecha, total, sucursal.nombre_suc, empleado.nombre_emp, cliente.nombre_cli from venta
-    #             join sucursal on venta.sucursal_id_sucursal = sucursal.id_sucursal
-    #             join empleado on venta.empleado_id_empleado = empleado.id_empleado
-    #             join cliente on venta.cliente_id_cliente = cliente.id_cliente where id_venta = %(id_venta)s"""
-    #         row_data = self.db.run_select_filter ( sql, {"id_venta": self.treeview.focus ()} )[0]
-    #         detalle ( self.db, self, row_data )
+    def __Editar_D(self):
+        if (self.treeview.focus () != ""):
+            sql = """select id_venta, fecha, total, sucursal.nombre_suc, empleado.nombre_emp, cliente.nombre_cli from venta
+                join sucursal on venta.sucursal_id_sucursal = sucursal.id_sucursal
+                join empleado on venta.empleado_id_empleado = empleado.id_empleado
+                join cliente on venta.cliente_id_cliente = cliente.id_cliente where id_venta = %(id_venta)s"""
+            row_data = self.db.run_select_filter ( sql, {"id_venta": self.treeview.focus ()} )[0]
+            detalle ( self.db, self, row_data )
 
     def __Eliminar_V(self):
         sql = "select * from venta where id_venta = %(id_venta)s"
