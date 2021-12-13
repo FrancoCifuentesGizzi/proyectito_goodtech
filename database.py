@@ -45,3 +45,18 @@ class Database:
         except mysql.connector.Error as err:
             print("No se puede realizar la sql")
             print(err)
+
+    def corre_user_sql(self, sql):
+        try:
+            self.cursor.execute ( sql )
+            self.db.commit ()
+        except mysql.connector.Error as err:
+            print("")
+
+    def corre_procedure_sql(self, sql):
+        try:
+            self.cursor.execute ( sql )
+            self.db.commit ()
+        except mysql.connector.Error as err:
+            print("No se puede realizar la sql")
+            print(err)

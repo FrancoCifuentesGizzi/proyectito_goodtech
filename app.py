@@ -14,6 +14,8 @@ from bodega import bodega
 from empleado import empleado
 from producto import producto
 from marca import marca
+from venta import venta
+from stock_producto import stock_producto
 
 
 class App:
@@ -77,10 +79,8 @@ class login:
         self.db = db
         self.root = root
 
-        sql = """delete from perfil"""
-        self.db.run_sql ( sql, {""} )
         sql = """insert into perfil (id_perfil, tipo_perfil) values (1, "Administrador"), (2, "Admin Bodega"), (3, "Venta")"""
-        self.db.run_sql ( sql, {""} )
+        self.db.corre_user_sql ( sql )
 
         self.frame = LabelFrame ( self.root, text="" )
         self.frame.place ( x=330, y=53, relwidth=0.31, relheight=0.8 )
@@ -156,44 +156,58 @@ class administrador:
 
 
         self.b2 = Button ( self.root, text="Sucursales", width=20 )
-        self.b2.place ( x = 30, y = 70)
+        self.b2.place ( x = 30, y = 65)
         self.b2.bind ( '<Button-1>', self.__mostrar_sucursales )
 
         #
         self.b3 = Button ( self.root, text="Ciudades", width=20 )
-        self.b3.place ( x = 30, y = 110)
+        self.b3.place ( x = 30, y = 100)
         self.b3.bind ( '<Button-1>', self.__mostrar_ciudades )
 
         #
         self.b4 = Button ( self.root, text="Bodegas", width=20 )
-        self.b4.place ( x = 30, y = 150)
+        self.b4.place ( x = 30, y = 135)
         self.b4.bind ( '<Button-1>', self.__mostrar_bodegas )
 
         self.b5 = Button ( self.root, text="Empleados", width=20 )
-        self.b5.place ( x = 30, y = 190)
+        self.b5.place ( x = 30, y = 170)
         self.b5.bind ( '<Button-1>', self.__mostrar_empleados )
 
 
         self.b6 = Button ( self.root, text="Productos", width=20 )
-        self.b6.place ( x = 30, y = 230)
+        self.b6.place ( x = 30, y = 205)
         self.b6.bind ( '<Button-1>', self.__mostrar_productos )
 
 
         self.b7 = Button ( self.root, text="Marcas", width=20 )
-        self.b7.place ( x = 30, y = 270)
+        self.b7.place ( x = 30, y = 240)
         self.b7.bind ( '<Button-1>', self.__mostrar_marcas )
 
 
         self.b8 = Button ( self.root, text="Venta", width=20 )
-        self.b8.place ( x = 30, y = 310)
-        # b8.bind ( '<Button-1>', self. )
-        self.b8.config ( background="red" )
+        self.b8.place ( x = 30, y = 275)
+        self.b8.bind ( '<Button-1>', self.__mostrar_ventas )
+
 
 
         self.b9 = Button ( self.root, text="Detalle venta", width=20 )
-        self.b9.place ( x = 30, y = 350)
+        self.b9.place ( x = 30, y = 310)
         # b9.bind ( '<Button-1>', self. )
         self.b9.config ( background="red" )
+
+        self.b10 = Button ( self.root, text="Stock Producto", width=20 )
+        self.b10.place ( x=30, y=345 )
+        self.b10.bind ( '<Button-1>', self.__mostrar_stock )
+
+        self.b11 = Button ( self.root, text="Perfiles", width=20 )
+        self.b11.place ( x=30, y=380 )
+        # b11.bind ( '<Button-1>', self. )
+        self.b11.config ( background="red" )
+
+        self.b12 = Button ( self.root, text="Detalles", width=20 )
+        self.b12.place ( x=30, y=415 )
+        # b12.bind ( '<Button-1>', self. )
+        self.b12.config ( background="red" )
 
 
         self.b_atras = ttk.Button ( self.root, text="Cerrar sesión", width=20, command= self.btn_hide )
@@ -245,6 +259,16 @@ class administrador:
         self.__limpia_pantalla()
         marca ( self.root, self.db, self.b7, self.__limpia_pantalla )
 
+    def __mostrar_ventas(self, button):
+        self.__limpia_pantalla()
+        venta ( self.root, self.db )
+
+
+
+    def __mostrar_stock(self, button):
+        self.__limpia_pantalla()
+        stock_producto ( self.root, self.db, self.b10, self.__limpia_pantalla )
+
 
     def __atras(self, button):
         ke_dijo = messagebox.askyesno ( message="¿Desea cerrar sesión?" )
@@ -253,12 +277,10 @@ class administrador:
             self.b1.place_forget ()
             Inicio(self.db, self.root)
 
-
     def __limpia_pantalla(self):
         self.label.master.destroy ()
         self.__agrega_imagen_principal()
         self.__crea_botones_principales()
-
 
     def __botones_dorados(self):
         self.b1.config ( background="dark goldenrod" )
@@ -268,125 +290,11 @@ class administrador:
         self.b5.config ( background="dark goldenrod" )
         self.b6.config ( background="dark goldenrod" )
         self.b7.config ( background="dark goldenrod" )
-        #self.b8.config ( background="dark goldenrod" )
+        self.b8.config ( background="dark goldenrod" )
         #self.b9.config ( background="dark goldenrod" )
-
-
-
-
-class adm_bodega:
-    def __init__(self, db, root):
-        self.db = db
-        self.root = root
-        # creación de botones e imagen
-        self.__agrega_imagen_principal ()
-        self.__crea_botones_principales ()
-
-
-    # botones principales.
-    def __crea_botones_principales(self):
-        padx = 2
-        pady = 2
-
-        #
-        self.b1 = Button ( self.root, text="Clientes", width=20 )
-        self.b1.place ( x = 30, y = 30)
-        self.b1.bind ( '<Button-1>', self.__mostrar_clientes )
-        self.b1.config ( background="dark goldenrod" )
-
-        #
-        b2 = Button ( self.root, text="Sucursales", width=20 )
-        b2.place ( x = 30, y = 70)
-        b2.bind ( '<Button-1>', self.__mostrar_sucursales )
-        b2.config ( background="dark goldenrod" )
-
-        #
-        b3 = Button ( self.root, text="Ciudades", width=20 )
-        b3.place ( x = 30, y = 110)
-        b3.bind ( '<Button-1>', self.__mostrar_ciudades )
-        b3.config ( background="dark goldenrod" )
-
-        #
-        b4 = Button ( self.root, text="Bodegas", width=20 )
-        b4.place ( x = 30, y = 150)
-        b4.bind ( '<Button-1>', self.__mostrar_bodegas )
-        b4.config ( background="dark goldenrod" )
-
-        b5 = Button ( self.root, text="Empleados", width=20 )
-        b5.place ( x = 30, y = 190)
-        b5.bind ( '<Button-1>', self.__mostrar_empleados )
-        b5.config ( background="dark goldenrod" )
-
-        b6 = Button ( self.root, text="Productos", width=20 )
-        b6.place ( x = 30, y = 230)
-        b6.bind ( '<Button-1>', self.__mostrar_productos )
-        b6.config ( background="dark goldenrod" )
-
-        b7 = Button ( self.root, text="Marcas", width=20 )
-        b7.place ( x = 30, y = 270)
-        b7.bind ( '<Button-1>', self.__mostrar_marcas )
-        b7.config ( background="dark goldenrod" )
-
-        b8 = Button ( self.root, text="Venta", width=20 )
-        b8.place ( x = 30, y = 310)
-        # b8.bind ( '<Button-1>', self. )
-        b8.config ( background="red" )
-
-        b9 = Button ( self.root, text="Detalle venta", width=20 )
-        b9.place ( x = 30, y = 350)
-        # b9.bind ( '<Button-1>', self. )
-        b9.config ( background="red" )
-
-        self.b_atras = Button ( self.root, text="Cerrar sesión", width=20, command= self.btn_hide )
-        self.b_atras.place ( x = 30, y = 490)
-        self.b_atras.bind ( '<Button-1>', self.__atras )
-        self.b_atras.config ( background="red" )
-
-    def btn_hide(self):
-        self.b_atras.place_forget ()
-
-
-
-    # imagen principal.
-    def __agrega_imagen_principal(self):
-        #
-        self.fondo = LabelFrame ( self.root, text="", relief=tk.FLAT )
-        self.fondo.place ( x=0, y=0, relwidth=1, relheight=1 )
-        image = Image.open ( "fondo2.jpg" )
-        photo = ImageTk.PhotoImage ( image.resize ( (950, 550), Image.ANTIALIAS ) )
-        self.label = Label ( self.fondo, image=photo )
-        self.label.image = photo
-        self.label.pack ()
-
-    def __mostrar_clientes(self, button):
-        cliente ( self.root, self.db )
-
-    def __mostrar_sucursales(self, button):
-        sucursal ( self.root, self.db )
-
-    def __mostrar_ciudades(self, button):
-        ciudad ( self.root, self.db )
-
-    def __mostrar_bodegas(self, button):
-        bodega ( self.root, self.db )
-
-    def __mostrar_empleados(self, button):
-        empleado ( self.root, self.db )
-
-    def __mostrar_productos(self, button):
-        producto ( self.root, self.db )
-
-    def __mostrar_marcas(self, button):
-        marca ( self.root, self.db )
-
-    def __atras(self, button):
-        self.label.master.destroy ()
-        self.b1.place_forget ()
-
-        Inicio(self.db, self.root)
-
-
-
+        self.b10.config ( background="dark goldenrod" )
+        #self.b11.config ( background="dark goldenrod" )
+        #self.b12.config ( background="dark goldenrod" )
 
 
 
