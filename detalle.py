@@ -3,12 +3,13 @@ from tkinter import ttk
 
 class detalle:
     #Configuración de la ventana principal
-    def __init__(self, db, padre, row_data):
+    def __init__(self, db, padre, row_data, llenar_treeview_venta):
         self.padre = padre
         self.data = []
         self.db = db
         self.row_data = row_data
         self.detail_data = tk.Toplevel ()
+        self.llenar_venta = llenar_treeview_venta
 
         self.detail_data.geometry('900x400')
         self.detail_data.title("Detalle Venta")
@@ -41,7 +42,7 @@ class detalle:
     def __config_buttons_detalles(self):
         ttk.Button(self.detail_data, command = self.__Agregar_PV, text="Agregar Producto").place(x = 0, y = 350, width = 275, height = 50)
         ttk.Button(self.detail_data, command = self.__Eliminar_PV, text="Eliminar Producto").place(x = 275, y = 350, width = 275, height = 50)
-
+        ttk.Button ( self.detail_data, command=self.__Aceptar_PV, text="Aceptar" ).place ( x=550, y=350,width=275, height=50 )
 
     def llenar_treeview_detalle(self):
         sql = """select id_detalle, nombre_pro, id_venta, precio_venta, cantidad from detalle_venta
@@ -160,3 +161,5 @@ class Del_ProVent:
                                 "current": self.row_data[0]})
         self.del_datos.destroy ()
         self.padre.llenar_treeview_detalle ()
+
+

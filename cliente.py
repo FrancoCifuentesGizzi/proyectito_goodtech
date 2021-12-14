@@ -45,10 +45,13 @@ class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modif
                      command=self.cerrar_cliente ).place ( x=549, y=340, width=183, height=35 )
 
     def llenar_treeview_cliente(self):  # Se llena el treeview de datos.
+
+        rut_del = ("call eliminar_duplicados_rut()")
+
+        self.db.corre_procedure_sql(rut_del)
         sql = "select * from cliente order by id_cliente asc"
         # Ejecuta el select
         data = self.db.run_select ( sql )
-
         # Si la data es distina a la que hay actualmente...
         if (data != self.data):
             # Elimina todos los rows del treeview
@@ -58,6 +61,7 @@ class cliente:  # Clase de equipo, puede llamar a las clases de insertar y modif
                 self.treeview.insert ( "", "end", text=i[1],
                                        values=(i[2], i[3], i[4], i[5]), iid=i[1] )
             self.data = data  # Actualiza la data
+
 
     def insertar_cliente(self):
         insertar_cliente( self.db, self, self.root )
@@ -124,12 +128,13 @@ class insertar_cliente:  # Clase para insertar data
 
     def __insertar(self):  # Insercion en la base de datos.
         sql = """insert into cliente (rut_cliente, nombre_cli, apellido_cli, direccion_cli, telefono_cli) 
-                values (%(rut_cliente)s, %(nombre_cli)s, %(apellido_cli)s, %(direccion_cli)s, %(telefono_cli)s)"""
+        values (%(rut_cliente)s, %(nombre_cli)s, %(apellido_cli)s, %(direccion_cli)s, %(telefono_cli)s)"""
         self.db.run_sql ( sql, {"rut_cliente": self.entry_rut.get (),
-                                "nombre_cli": self.entry_nombre.get (),
-                                "apellido_cli": self.entry_apellido.get (),
-                                "direccion_cli": self.entry_direccion.get (),
-                                "telefono_cli": self.entry_telefono.get () } )
+                        "nombre_cli": self.entry_nombre.get (),
+                        "apellido_cli": self.entry_apellido.get (),
+                        "direccion_cli": self.entry_direccion.get (),
+                        "telefono_cli": self.entry_telefono.get () } )
+
         self.insert_datos.place_forget ()
         self.padre.llenar_treeview_cliente ()
 

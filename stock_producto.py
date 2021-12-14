@@ -22,7 +22,7 @@ class stock_producto:
     def __config_treeview(self):
         self.treeview = ttk.Treeview ( self.root )
         self.treeview.configure ( columns=("#0", "#1", "#2", "#3", "#4") )
-        self.treeview.heading ( "#0", text="iD Producto" )
+        self.treeview.heading ( "#0", text="ID Producto" )
         self.treeview.heading ( "#1", text="ID Bodega" )
         self.treeview.heading ( "#2", text="Producto" )
         self.treeview.heading ( "#3", text="Bodega" )
