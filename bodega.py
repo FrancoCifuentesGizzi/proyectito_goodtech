@@ -4,6 +4,7 @@ from tkinter import Menu
 from tkinter import LabelFrame, Label, Frame
 from tkinter import Button
 from tkinter import messagebox
+from stock_producto import stock_producto
 
 class bodega:
     #Configuración de la ventana principal
@@ -39,13 +40,15 @@ class bodega:
     #Configuración de los botones
     def __config_buttons_bodega(self):
         ttk.Button ( self.treeview, text="Agregar Bodega",
-                     command=self.__Agregar_B ).place ( x=0, y=340, width=183, height=35 )
+                     command=self.__Agregar_B ).place ( x=0, y=340, width=147, height=35 )
         ttk.Button ( self.treeview, text="Modificar Bodega",
-                     command=self.__Editar_B ).place ( x=183, y=340, width=183, height=35 )
+                     command=self.__Editar_B ).place ( x=147, y=340, width=147, height=35 )
         ttk.Button ( self.treeview, text="Eliminar Bodega",
-                     command=self.__Eliminar_B ).place ( x=366, y=340, width=183, height=35 )
+                     command=self.__Eliminar_B ).place ( x=294, y=340, width=147, height=35 )
+        ttk.Button ( self.treeview, text="Detalles",
+                     command=self.__Detalle_B ).place ( x=441, y=340, width=147, height=35 )
         ttk.Button ( self.treeview, text="Cerrar",
-                     command=self.__Cerrar_B ).place ( x=549, y=340, width=183, height=35 )
+                     command=self.__Cerrar_B ).place ( x=588, y=340, width=147, height=35 )
 
     def llenar_treeview_bodega(self):
         sql = """select id_bodega, nombre_bod, direccion_bod, telefono_bod, ciudad.nombre_ciu
@@ -79,6 +82,13 @@ class bodega:
                 sql = """delete from bodega where id_bodega = %(id_bodega)s"""
                 self.db.run_sql ( sql, {"id_bodega": self.treeview.focus ()} )
                 self.llenar_treeview_bodega ()
+
+    def __Detalle_B(self):
+        if (self.treeview.focus () != ""):
+            sql = """select id_bodega, nombre_bod, direccion_bod, telefono_bod, ciudad.nombre_ciu from bodega
+                join ciudad on bodega.ciudad_id_ciudad = ciudad.id_ciudad where id_bodega = %(id_bodega)s"""
+            row_data = self.db.run_select_filter ( sql, {"id_bodega": self.treeview.focus ()} )[0]
+            stock_producto ( self.db, self, row_data )
 
     def __Cerrar_B(self):
         self.boton.config ( background="dark goldenrod" )
